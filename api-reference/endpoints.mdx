@@ -44,8 +44,23 @@ GET /thirdParty/prices/{region}?addressId={addressId}
 
 ---
 
-## Connect address
-Generate a link to present a web view that will allow the user to authorize access to their metering point data, incl. all charges.
+## Prices including charges
+To get electricity prices including all current and applicable charges, the end user must grant access to their household data through the public energy portal [**Eloverblik**](https://eloverblik.dk).
+
+This process consists of **3** steps:
+<Steps>
+  <Step title="Grant access" icon="lock-open" iconType="solid">
+  In order to get access to all current and applicable charges for a given household, the end-user must first authorize access. This is achieved by logging in with [**MitID**](https://www.mitid.dk/) through [**Eloverblik**](https://eloverblik.dk).
+  </Step>
+  <Step title="List addresses" icon="list" iconType="solid">
+  </Step>
+  <Step title="Get prices for address" icon="chart-simple" iconType="solid">
+  </Step>
+</Steps>
+
+
+### Grant access
+Generate an authorization link to present a web view that will allow the user to authorize access to their household data, incl. all charges.
 ```javascript
 GET /thirdParty/users/{userId}/connectAddress
 ```
