@@ -47,7 +47,7 @@
       "method": "bearer"
     },
     "playground": {
-      "mode": "hide"
+      "mode": "simple"
     }
   }
 }
