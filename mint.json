@@ -32,8 +32,8 @@
   "navigation": [
     {
       "group": "Documentation",
-      "pages": ["introduction", "api-reference/authentication", {
-                "group": "api-reference/endpoints",
+      "pages": ["introduction", "api-reference/authentication", "api-reference/endpoints", {
+                "group": "Endpoints",
                 "pages": ["test"]
             }]
     }
