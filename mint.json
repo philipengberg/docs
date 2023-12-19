@@ -33,7 +33,7 @@
     {
       "group": "Documentation",
       "pages": ["introduction", "api-reference/authentication", "api-reference/endpoints", {
-                "group": "api-reference/endpoints",
+                "group": "Endpoints",
                 "pages": ["api-reference/prices"]
             }]
     }
