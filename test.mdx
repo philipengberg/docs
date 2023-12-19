@@ -6,7 +6,7 @@ api: 'GET https://min-strom.herokuapp.com/thirdParty/prices/{region}?addressId={
 <ParamField path="region" type="string" required="true">
   See [Regions](/api-reference/shared#regions) for possible values
 </ParamField>
-<ParamField path="addressId" type="string">
+<ParamField query="addressId" type="string">
   The ID of a connected address. If available, this will include all charges for the address in the electricity price.
 </ParamField>
 </Accordion>
