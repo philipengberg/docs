@@ -32,7 +32,7 @@
   "navigation": [
     {
       "group": "Documentation",
-      "pages": ["introduction", "api-reference/authentication", "api-reference/endpoints"]
+      "pages": ["introduction", "get-started", "api-reference/authentication", "api-reference/endpoints"]
     }
   ],
   "footerSocials": {
