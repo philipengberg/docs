@@ -2,16 +2,15 @@
 title: 'Get electricity prices'
 api: 'GET /thirdParty/prices/{region}?addressId={addressId}'
 ---
-<Accordion title="Parameters">
+### Parameters
 <ParamField path="region" type="string" required="true">
   See [Regions](/api-reference/shared#regions) for possible values
 </ParamField>
 <ParamField query="addressId" type="string">
   The ID of a connected address. If available, this will include all charges for the address in the electricity price.
 </ParamField>
-</Accordion>
 
-<Accordion title="Response">
+### Response
 <ResponseField name="date" type="string" required="true">
   ISO8601 timestamp of the price interval start
 </ResponseField>
@@ -24,7 +23,6 @@ api: 'GET /thirdParty/prices/{region}?addressId={addressId}'
 <ResponseField name="color" type="string">
   The suggested color to show along with the `price`. This is dynamic based on `region` and whether `charges` are available or not. Possible values are: `green`, `yellow`, `red`.
 </ResponseField>
-</Accordion>
 
 <ResponseExample>
 
