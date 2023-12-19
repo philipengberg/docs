@@ -1,1 +1,49 @@
-<Snippet file="prices.mdx" />
+---
+title: 'Get electricity prices'
+description: 'Get the future hourly electricity prices, either as spot prices or incl. charges when possible.'
+api: 'GET /thirdParty/prices/{region}?addressId={addressId}'
+---
+<ParamField path="region" type="string" required="true">
+  See [Regions](/api-reference/shared#regions) for possible values
+</ParamField>
+<ParamField query="addressId" type="string">
+  The ID of a connected address. If available, this will include all charges for the address in the electricity price.
+</ParamField>
+
+<br />
+<Accordion title="Response">
+<ResponseField name="date" type="string" required="true">
+  ISO8601 timestamp of the price interval start
+</ResponseField>
+<ResponseField name="price" type="double" required="true">
+  The *total* electricity price for that hour, but only spot price if charges are unavailable.
+</ResponseField>
+<ResponseField name="charges" type="double">
+  All current and applicable charges combined.
+</ResponseField>
+<ResponseField name="color" type="string">
+  The suggested color to show along with the `price`. This is dynamic based on `region` and whether `charges` are available or not. Possible values are: `green`, `yellow`, `red`.
+</ResponseField>
+</Accordion>
+
+
+<ResponseExample>
+
+```json
+[
+    {
+        "date": "2023-10-12T14:00:00Z",
+        "price": 2.04095,
+        "charges": 1.4335,
+        "color": "yellow"
+    },
+    {
+        "date": "2023-10-12T15:00:00Z",
+        "price": 3.6294125,
+        "charges": 2.277875,
+        "color": "yellow"
+    }
+]
+```
+
+</ResponseExample>
