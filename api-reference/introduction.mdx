@@ -14,7 +14,7 @@ There are two ways to build API documentation: [OpenAPI](https://mintlify.com/do
 
 <Card
   title="Plant Store Endpoints"
-  icon="leaf"
+  icon="bolt"
   href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
 >
   View the OpenAPI specification file
@@ -22,12 +22,10 @@ There are two ways to build API documentation: [OpenAPI](https://mintlify.com/do
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+The Min Strøm API uses Bearer authorization. Get in contact to obtain a token.
+
+Include bearer token in HTTP header as follows:
 
 ```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+"Authorization": "Bearer <token>"
 ```
