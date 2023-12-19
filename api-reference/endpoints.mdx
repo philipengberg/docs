@@ -9,12 +9,14 @@ Get the future hourly electricity prices, either as spot prices or incl. charges
 GET /thirdParty/prices/{region}?addressId={addressId}
 ```
 
-| Parameter | Type | | Description |
+<Accordion title="Parameters">
+|  |  | |  |
 | - | - | - |- |
-| `region` | String | **Required** | See Regions for possible values |
+| `region` | String | **Required** | See [Regions](/shared) for possible values |
 | `addressId` | String | *Optional* | The ID of a connected address. If available, this will include all charges for the address in the electricity price. |
+</Accordion>
 
-### Response
+<Accordion title="Response">
 ```json
 [
     {
@@ -37,3 +39,4 @@ GET /thirdParty/prices/{region}?addressId={addressId}
 | `price` | Double | **Required** | The *total* electricity price for that hour, but only spot price if charges are unavailable. |
 | `charges` | Double | *Optional* | The total amount of charges. |
 | `color` | String | *Optional* | The suggested color to show along with the `price`. This is dynamic based on `region` and whether `charges` are available or not. Possible values are: `green`, `yellow`, `red`. |
+</Accordion>
