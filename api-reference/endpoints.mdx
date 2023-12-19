@@ -4,10 +4,18 @@ description: ''
 icon: 'server'
 ---
 
+## Base URL
+The Min Strøm API is accessed through the following base URL:
+```
+https://min-strom.herokuapp.com/thirdParty
+```
+
+---
+
 ## Electricity prices
 Get the future hourly electricity prices, either as spot prices or incl. charges when possible.
 ```javascript
-GET /thirdParty/prices/{region}?addressId={addressId}
+GET /prices/{region}?addressId={addressId}
 ```
 
 <Accordion title="Parameters">
@@ -64,7 +72,7 @@ This process consists of **3** steps:
 ### Grant access
 Generate an authorization link to present a web view that will allow the user to authorize access to their household data, incl. all charges.
 ```javascript
-GET /thirdParty/users/{userId}/connectAddress
+GET /users/{userId}/connectAddress
 ```
 <Accordion title="Parameters">
 |  |  | |  |
@@ -79,7 +87,7 @@ GET /thirdParty/users/{userId}/connectAddress
 Get all addresses associated to a user.
 
 ```javascript
-GET /thirdParty/users/{userId}/connectedAddresses
+GET /users/{userId}/connectedAddresses
 ```
 
 <Accordion title="Parameters">
