@@ -41,3 +41,19 @@ GET /thirdParty/prices/{region}?addressId={addressId}
 | `charges` | Double | *Optional* | The total amount of charges. |
 | `color` | String | *Optional* | The suggested color to show along with the `price`. This is dynamic based on `region` and whether `charges` are available or not. Possible values are: `green`, `yellow`, `red`. |
 </Accordion>
+
+---
+
+## Connect address
+Generate a link to present a web view that will allow the user to authorize access to their metering point data, incl. all charges.
+```javascript
+GET /thirdParty/users/{userId}/connectAddress
+```
+<Accordion title="Parameters">
+|  |  | |  |
+| - | - | - |- |
+| `userId` | String | **Required** | The ID of the user in your system |
+</Accordion>
+
+<Warning>This immediately redirects to the authorization page on Eloverblik.dk</Warning>
+<Warning>Does NOT require authorization header</Warning>
