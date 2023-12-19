@@ -26,17 +26,13 @@
     "url": "https://minstroem.app"
   },
   "tabs": [
-    {
-      "name": "API Reference",
-      "url": "api-reference"
-    }
   ],
   "anchors": [
   ],
   "navigation": [
     {
-      "group": "Get Started",
-      "pages": ["introduction", "quickstart", "development"]
+      "group": "Documentation",
+      "pages": ["introduction", "api-reference"]
     },
     {
       "group": "API Documentation",
