@@ -32,10 +32,19 @@
   "navigation": [
     {
       "group": "Documentation",
-      "pages": ["introduction", "api-reference/authentication", "api-reference/endpoints"]
+      "pages": ["introduction", "api-reference/authentication", "api-reference/endpoints", {
+                "group": "Test",
+                "pages": ["test"]
+            }]
     }
   ],
   "footerSocials": {
     "linkedin": "https://www.linkedin.com/company/86938713"
+  },
+  "api": {
+    "baseUrl": "https://min-strom.herokuapp.com",
+    "auth": {
+      "method": "bearer"
+    }
   }
 }
