@@ -53,8 +53,10 @@ This process consists of **3** steps:
   In order to get access to all current and applicable charges for a given household, the end-user must first authorize access. This is achieved by logging in with [**MitID**](https://www.mitid.dk/) through [**Eloverblik**](https://eloverblik.dk).
   </Step>
   <Step title="List addresses" icon="list" iconType="solid">
+  When the end-user has authorized access, you should display the list of addresses associated with the given user, so that they can select which address to get data from.
   </Step>
   <Step title="Get prices for address" icon="chart-simple" iconType="solid">
+  You can now request electricity prices incl. all current and applicable charges.
   </Step>
 </Steps>
 
@@ -72,3 +74,41 @@ GET /thirdParty/users/{userId}/connectAddress
 
 <Warning>This immediately redirects to the authorization page on Eloverblik.dk</Warning>
 <Warning>Does NOT require authorization header</Warning>
+
+### List addresses
+Get all addresses associated to a user.
+
+```javascript
+GET /thirdParty/users/{userId}/connectedAddresses
+```
+
+<Accordion title="Parameters">
+|  |  | |  |
+| - | - | - |- |
+| `userId` | String | **Required** | The ID of the user in your system |
+</Accordion>
+
+<Accordion title="Response" defaultOpen="true">
+```json
+[
+    {
+        "id": "571313174032556653"
+        "address": "Æblevej 1A, 2. th.",
+        "fullAddress": "Æblevej 1A, 2. th, 2200 København N",
+    },
+    {
+        "id": "571313181101102422"
+        "address": "Appelsinvej 243",
+        "fullAddress": "Appelsinvej 243, 4200 Slagelse",
+    }
+]
+```
+| Parameter | Type | | Description |
+| - | - | - |- |
+| `id` | String | **Required** | Unique ID of the address. Used to include charges on [/prices](#electricity-prices) endpoint. |
+| `address` | String | **Required** | A short version of the address, suitable to show in UI. |
+| `fullAddress` | String | **Required** | The full address. |
+</Accordion>
+
+
+
