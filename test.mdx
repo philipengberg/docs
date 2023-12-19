@@ -2,18 +2,15 @@
 title: 'Get electricity prices'
 description: 'Get the future hourly electricity prices, either as spot prices or incl. charges when possible.'
 api: 'GET /thirdParty/prices/{region}?addressId={addressId}'
----
-## Parameters
 <ParamField path="region" type="string" required="true">
   See [Regions](/api-reference/shared#regions) for possible values
 </ParamField>
 <ParamField query="addressId" type="string">
   The ID of a connected address. If available, this will include all charges for the address in the electricity price.
 </ParamField>
+---
 
-
-## Response
-<Accordion icon="list">
+<Accordion title="Response" icon="list-tree">
 <ResponseField name="date" type="string" required="true">
   ISO8601 timestamp of the price interval start
 </ResponseField>
