@@ -32,8 +32,8 @@
   "navigation": [
     {
       "group": "Documentation",
-      "pages": ["introduction", "api-reference/authentication", "api-reference/endpoints", {
-                "group": "Test",
+      "pages": ["introduction", "api-reference/authentication", {
+                "group": "api-reference/endpoints",
                 "pages": ["test"]
             }]
     }
@@ -45,6 +45,9 @@
     "baseUrl": "https://min-strom.herokuapp.com",
     "auth": {
       "method": "bearer"
+    },
+    "playground": {
+      "mode": "hide"
     }
   }
 }

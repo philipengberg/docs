@@ -1,4 +1,18 @@
 ---
 title: 'Get electricity prices'
-api: 'POST https://min-strom.herokuapp.com/thirdParty/prices/{region}?addressId={addressId}'
+api: 'GET https://min-strom.herokuapp.com/thirdParty/prices/{region}?addressId={addressId}'
 ---
+<Accordion title="Parameters">
+<ParamField path="region" type="string" required="true">
+  See [Regions](/api-reference/shared#regions) for possible values
+</ParamField>
+<ParamField path="addressId" type="string">
+  The ID of a connected address. If available, this will include all charges for the address in the electricity price.
+</ParamField>
+</Accordion>
+
+<Accordion title="Response">
+<ResponseField name="username" type="string" required>
+  The username of the user
+</ResponseField>
+</Accordion>
