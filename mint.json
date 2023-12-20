@@ -39,7 +39,7 @@
     "linkedin": "https://www.linkedin.com/company/86938713"
   },
   "api": {
-    "baseUrl": "https://min-strom.herokuapp.com",
+    "baseUrl": "https://api.minstroem.app",
     "auth": {
       "method": "bearer"
     },
