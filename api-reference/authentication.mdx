@@ -3,16 +3,35 @@ title: 'Authentication'
 icon: 'lock'
 ---
 
-The Min Strøm API uses **Bearer** authorization.
+The Min Strøm API uses **Bearer** authentication.
 
-Include your bearer token in the HTTP header as follows:
+## Prerequisites
+1. API key
+2. API secret
+
+<Card title="Get access" icon="lock-open" href="mailto:engberg@minstroem.app?subject=Request for API access">
+Click here to get in contact to obtain API key and secret.
+</Card>
+
+## Generate Bearer token
+
+<Steps>
+<Step title="Create hash">
+Create an `HMAC-SHA256` hash of the **API key** with **API secret** as key
+</Step>
+<Step title="Concatenate">
+Concatenate your **API key** with the hashed value with a `:`
+```ruby
+API_KEY:HASHED_VALUE
+```
+</Step>
+<Step title="Base64 encode">
+Create a Base64 encoded string of the above concatenation
+</Step>
+</Steps>
+
+Include this a **Bearer** token in the HTTP header:
 
 ```json
 "Authorization": "Bearer <token>"
 ```
-
----
-
-<Card title="Get access" icon="lock-open" href="mailto:engberg@minstroem.app">
-Click here to get in contact to obtain a bearer token.
-</Card>
