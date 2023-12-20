@@ -47,5 +47,9 @@
       "mode": "simple"
     }
   },
-  "feedback.thumbsRating": true
+  "feedback.thumbsRating": true,
+  "topbarCtaButton": {
+    "url": "https://minstroem.app",
+    "name": "minstroem.app"
+  }
 }
