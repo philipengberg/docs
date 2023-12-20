@@ -23,6 +23,10 @@
     {
       "name": "Support",
       "url": "mailto:engberg@minstroem.com"
+    },
+    {
+      "url": "https://minstroem.app",
+      "name": "minstroem.app"
     }
   ],
   "tabs": [
@@ -51,11 +55,5 @@
   "topbarCtaButton": {
     "url": "mailto:engberg@minstroem.app?subject=Request for API access",
     "name": "Get access"
-  },
-  "topbarLinks": [
-    {
-      "url": "https://minstroem.app",
-      "name": "minstroem.app"
-    }
-  ]
+  }
 }
