@@ -49,7 +49,13 @@
   },
   "feedback.thumbsRating": true,
   "topbarCtaButton": {
-    "url": "https://minstroem.app",
-    "name": "minstroem.app"
-  }
+    "url": "mailto:engberg@minstroem.app?subject=Request for API access",
+    "name": "Get access"
+  },
+  "topbarLinks": [
+    {
+      "url": "https://minstroem.app",
+      "name": "minstroem.app"
+    }
+  ]
 }
