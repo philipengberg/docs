@@ -22,11 +22,11 @@
   "topbarLinks": [
     {
       "url": "https://minstroem.app",
-      "name": "minstroem.app"
+      "name": "Home"
     },
     {
       "name": "Support",
-      "url": "mailto:engberg@minstroem.com?subject=API support"
+      "url": "mailto:engberg@minstroem.com"
     }
   ],
   "tabs": [
