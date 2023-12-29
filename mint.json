@@ -25,6 +25,10 @@
       "name": "Home"
     },
     {
+      "url": "https://status.minstroem.app",
+      "name": "Status"
+    },
+    {
       "name": "Support",
       "url": "mailto:engberg@minstroem.com"
     }
