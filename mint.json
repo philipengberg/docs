@@ -59,5 +59,9 @@
   "topbarCtaButton": {
     "url": "mailto:engberg@minstroem.app?subject=Request for API access",
     "name": "Get access"
+  },
+  "modeToggle": {
+    "default": "light",
+    "isHidden": false
   }
 }
