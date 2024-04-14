@@ -49,197 +49,200 @@ GET /prices/{region}
 
 ---
 
-## Prices including charges (Address lookup)
-The easiest way to get prices including charges. This process only consists of 2 steps:
+## Spot prices incl. charges
+There are two overall approaches to get electricity prices including all charges.
+<Tabs>
+  <Tab title="Address lookup">
+    The easiest way to get prices including charges. This process only consists of 2 steps:
 
-<Steps>
-  <Step title="Search addresses" icon="list" iconType="solid">
-  When the end-user has authorized access, you should display the list of addresses associated with the given user, so that they can select which address to get data from.
-  </Step>
-  <Step title="Get prices for address" icon="chart-simple" iconType="solid">
-  You can now request electricity prices incl. all current and applicable charges.
-  </Step>
-</Steps>
+    <Steps>
+    <Step title="Search addresses" icon="list" iconType="solid">
+    When the end-user has authorized access, you should display the list of addresses associated with the given user, so that they can select which address to get data from.
+    </Step>
+    <Step title="Get prices for address" icon="chart-simple" iconType="solid">
+    You can now request electricity prices incl. all current and applicable charges.
+    </Step>
+    </Steps>
 
-<Warning>This approach does *not* guarantee the same degree of accuracy of charges as with the [Eloverblik](#prices-including-charges-eloverblik) approach.</Warning>
+    <Tip>This approach does *not* guarantee the same degree of accuracy of charges as with the [Eloverblik](#prices-including-charges-eloverblik) approach.</Tip>
 
-### Search address
-In order to get prices including charges you first need to get a valid address to make the lookup with.
+    ### Search address
+    In order to get prices including charges you first need to get a valid address to make the lookup with.
 
-```javascript
-GET /prices/suggestions?address={query}
-```
+    ```javascript
+    GET /prices/suggestions?address={query}
+    ```
 
-<Accordion title="Parameters">
-|   |   |   |   |
-| - | - | - | - |
-| `query` | String | **Required** | The free text address query to search for |
-</Accordion>
+    <Accordion title="Parameters">
+    |   |   |   |   |
+    | - | - | - | - |
+    | `query` | String | **Required** | The free text address query to search for |
+    </Accordion>
 
-<Accordion title="Response">
-```json
-[
-    {
-        "suggestion": "Solbakkevej 11, 2630 Taastrup",
-        "streetName": "Solbakkevej",
-        "": "11",
-        "zipCode": "2630"
-        "city": "Taastrup",
-    }
-]
-```
-| Parameter | Type | | Description |
-| - | - | - |- |
-| `suggestion` | String | **Required** | The full text string representation of the address to show to the user and pass on to subsequent endpoints as parameter |
-| `streetName` | String | *Optional* | The street name |
-| `streetNumber` | String | *Optional* | The street number |
-| `zipCode` | String | *Optional* | The zip code |
-| `city` | String | *Optional* | The city |
-</Accordion>
+    <Accordion title="Response">
+    ```json
+    [
+        {
+            "suggestion": "Solbakkevej 11, 2630 Taastrup",
+            "streetName": "Solbakkevej",
+            "": "11",
+            "zipCode": "2630"
+            "city": "Taastrup",
+        }
+    ]
+    ```
+    | Parameter | Type | | Description |
+    | - | - | - |- |
+    | `suggestion` | String | **Required** | The full text string representation of the address to show to the user and pass on to subsequent endpoints as parameter |
+    | `streetName` | String | *Optional* | The street name |
+    | `streetNumber` | String | *Optional* | The street number |
+    | `zipCode` | String | *Optional* | The zip code |
+    | `city` | String | *Optional* | The city |
+    </Accordion>
 
-### Get prices for address
-With a valid address you can now lookup prices including charges (best effort):
+    ### Get prices for address
+    With a valid address you can now lookup prices including charges (best effort):
 
-```javascript
-GET /prices/?address={address}
-```
+    ```javascript
+    GET /prices/?address={address}
+    ```
 
-<Accordion title="Parameters">
-|   |   |   |   |
-| - | - | - | - |
-| `address` | String | **Required** | The full text string representation of the address returned from the address susgestion endpoint. |
-</Accordion>
+    <Accordion title="Parameters">
+    |   |   |   |   |
+    | - | - | - | - |
+    | `address` | String | **Required** | The full text string representation of the address returned from the address susgestion endpoint. |
+    </Accordion>
 
-<Accordion title="Response">
-```json
-[
-    {
-        "date": "2023-10-12T14:00:00Z",
-        "price": 2.04095,
-        "charges": 1.4335,
-        "color": "yellow"
-    },
-    {
-        "date": "2023-10-12T15:00:00Z",
-        "price": 3.6294125,
-        "charges": 2.277875,
-        "color": "yellow"
-    }
-]
-```
-| Parameter | Type | | Description |
-| - | - | - |- |
-| `date` | String | **Required** | ISO8601 timestamp of the price interval start |
-| `price` | Double | **Required** | The *total* electricity price for that hour, but only spot price if charges are unavailable. |
-| `charges` | Double | *Optional* | The total amount of charges. |
-| `color` | String | *Optional* | The suggested color to show along with the `price`. This is dynamic based on `region` and whether `charges` are available or not. Possible values are: `green`, `yellow`, `red`. |
-</Accordion>
+    <Accordion title="Response">
+    ```json
+    [
+        {
+            "date": "2023-10-12T14:00:00Z",
+            "price": 2.04095,
+            "charges": 1.4335,
+            "color": "yellow"
+        },
+        {
+            "date": "2023-10-12T15:00:00Z",
+            "price": 3.6294125,
+            "charges": 2.277875,
+            "color": "yellow"
+        }
+    ]
+    ```
+    | Parameter | Type | | Description |
+    | - | - | - |- |
+    | `date` | String | **Required** | ISO8601 timestamp of the price interval start |
+    | `price` | Double | **Required** | The *total* electricity price for that hour, but only spot price if charges are unavailable. |
+    | `charges` | Double | *Optional* | The total amount of charges. |
+    | `color` | String | *Optional* | The suggested color to show along with the `price`. This is dynamic based on `region` and whether `charges` are available or not. Possible values are: `green`, `yellow`, `red`. |
+    </Accordion>
+  </Tab>
+  <Tab title="Eloverblik">
+    To get electricity **precise** prices including all current and applicable charges, the end user must grant access to their household data through the public energy portal [**Eloverblik**](https://eloverblik.dk).
 
----
-
-## Prices including charges (Eloverblik)
-To get electricity **precise** prices including all current and applicable charges, the end user must grant access to their household data through the public energy portal [**Eloverblik**](https://eloverblik.dk).
-
-This process consists of **3** steps:
-<Steps>
-  <Step title="Grant access" icon="lock-open" iconType="solid">
-  In order to get access to all current and applicable charges for a given household, the end-user must first authorize access. This is achieved by logging in with [**MitID**](https://www.mitid.dk/) through [**Eloverblik**](https://eloverblik.dk).
-  </Step>
-  <Step title="List addresses" icon="list" iconType="solid">
-  When the end-user has authorized access, you should display the list of addresses associated with the given user, so that they can select which address to get data from.
-  </Step>
-  <Step title="Get prices for address" icon="chart-simple" iconType="solid">
-  You can now request electricity prices incl. all current and applicable charges.
-  </Step>
-</Steps>
+    This process consists of **3** steps:
+    <Steps>
+    <Step title="Grant access" icon="lock-open" iconType="solid">
+    In order to get access to all current and applicable charges for a given household, the end-user must first authorize access. This is achieved by logging in with [**MitID**](https://www.mitid.dk/) through [**Eloverblik**](https://eloverblik.dk).
+    </Step>
+    <Step title="List addresses" icon="list" iconType="solid">
+    When the end-user has authorized access, you should display the list of addresses associated with the given user, so that they can select which address to get data from.
+    </Step>
+    <Step title="Get prices for address" icon="chart-simple" iconType="solid">
+    You can now request electricity prices incl. all current and applicable charges.
+    </Step>
+    </Steps>
 
 
-### Grant access
-Generate an authorization link to present a web view that will allow the user to authorize access to their household data, incl. all charges.
-```javascript
-GET /users/{userId}/connectAddress
-```
-<Accordion title="Parameters">
-|  |  | |  |
-| - | - | - |- |
-| `userId` | String | **Required** | The ID of the user in your system |
-</Accordion>
+    ### Grant access
+    Generate an authorization link to present a web view that will allow the user to authorize access to their household data, incl. all charges.
+    ```javascript
+    GET /users/{userId}/connectAddress
+    ```
+    <Accordion title="Parameters">
+    |  |  | |  |
+    | - | - | - |- |
+    | `userId` | String | **Required** | The ID of the user in your system |
+    </Accordion>
 
-<Warning>This immediately redirects to the authorization page on Eloverblik.dk</Warning>
-<Warning>Does NOT require authorization header</Warning>
+    <Warning>This immediately redirects to the authorization page on Eloverblik.dk</Warning>
+    <Warning>Does NOT require authorization header</Warning>
 
-### List addresses
-Get all addresses associated to a user.
+    ### List addresses
+    Get all addresses associated to a user.
 
-```javascript
-GET /users/{userId}/connectedAddresses
-```
+    ```javascript
+    GET /users/{userId}/connectedAddresses
+    ```
 
-<Accordion title="Parameters">
-|  |  | |  |
-| - | - | - |- |
-| `userId` | String | **Required** | The ID of the user in your system |
-</Accordion>
+    <Accordion title="Parameters">
+    |  |  | |  |
+    | - | - | - |- |
+    | `userId` | String | **Required** | The ID of the user in your system |
+    </Accordion>
 
-<Accordion title="Response">
-```json
-[
-    {
-        "id": "571313174032556653"
-        "address": "Æblevej 1A, 2. th.",
-        "fullAddress": "Æblevej 1A, 2. th, 2200 København N",
-    },
-    {
-        "id": "571313181101102422"
-        "address": "Appelsinvej 243",
-        "fullAddress": "Appelsinvej 243, 4200 Slagelse",
-    }
-]
-```
-| Parameter | Type | | Description |
-| - | - | - |- |
-| `id` | String | **Required** | Unique ID of the address. Used to include charges on [/prices](#electricity-prices) endpoint. |
-| `address` | String | **Required** | A short version of the address, suitable to show in UI. |
-| `fullAddress` | String | **Required** | The full address. |
-</Accordion>
+    <Accordion title="Response">
+    ```json
+    [
+        {
+            "id": "571313174032556653"
+            "address": "Æblevej 1A, 2. th.",
+            "fullAddress": "Æblevej 1A, 2. th, 2200 København N",
+        },
+        {
+            "id": "571313181101102422"
+            "address": "Appelsinvej 243",
+            "fullAddress": "Appelsinvej 243, 4200 Slagelse",
+        }
+    ]
+    ```
+    | Parameter | Type | | Description |
+    | - | - | - |- |
+    | `id` | String | **Required** | Unique ID of the address. Used to include charges on [/prices](#electricity-prices) endpoint. |
+    | `address` | String | **Required** | A short version of the address, suitable to show in UI. |
+    | `fullAddress` | String | **Required** | The full address. |
+    </Accordion>
 
-### Get prices for address
+    ### Get prices for address
 
-```javascript
-GET /prices/{region}?addressId={addressId}
-```
+    ```javascript
+    GET /prices/{region}?addressId={addressId}
+    ```
 
-<Accordion title="Parameters">
-|   |   |   |   |
-| - | - | - | - |
-| `region` | String | **Required** | See [Regions](/api-reference/shared#regions) for possible values |
-| `addressId` | String | *Optional* | The ID of a connected address. If available, this will include all charges for the address in the electricity price. |
-</Accordion>
+    <Accordion title="Parameters">
+    |   |   |   |   |
+    | - | - | - | - |
+    | `region` | String | **Required** | See [Regions](/api-reference/shared#regions) for possible values |
+    | `addressId` | String | *Optional* | The ID of a connected address. If available, this will include all charges for the address in the electricity price. |
+    </Accordion>
 
-<Accordion title="Response">
-```json
-[
-    {
-        "date": "2023-10-12T14:00:00Z",
-        "price": 2.04095,
-        "charges": 1.4335,
-        "color": "yellow"
-    },
-    {
-        "date": "2023-10-12T15:00:00Z",
-        "price": 3.6294125,
-        "charges": 2.277875,
-        "color": "yellow"
-    }
-]
-```
-| Parameter | Type | | Description |
-| - | - | - |- |
-| `date` | String | **Required** | ISO8601 timestamp of the price interval start |
-| `price` | Double | **Required** | The *total* electricity price for that hour, but only spot price if charges are unavailable. |
-| `charges` | Double | *Optional* | The total amount of charges. |
-| `color` | String | *Optional* | The suggested color to show along with the `price`. This is dynamic based on `region` and whether `charges` are available or not. Possible values are: `green`, `yellow`, `red`. |
-</Accordion>
+    <Accordion title="Response">
+    ```json
+    [
+        {
+            "date": "2023-10-12T14:00:00Z",
+            "price": 2.04095,
+            "charges": 1.4335,
+            "color": "yellow"
+        },
+        {
+            "date": "2023-10-12T15:00:00Z",
+            "price": 3.6294125,
+            "charges": 2.277875,
+            "color": "yellow"
+        }
+    ]
+    ```
+    | Parameter | Type | | Description |
+    | - | - | - |- |
+    | `date` | String | **Required** | ISO8601 timestamp of the price interval start |
+    | `price` | Double | **Required** | The *total* electricity price for that hour, but only spot price if charges are unavailable. |
+    | `charges` | Double | *Optional* | The total amount of charges. |
+    | `color` | String | *Optional* | The suggested color to show along with the `price`. This is dynamic based on `region` and whether `charges` are available or not. Possible values are: `green`, `yellow`, `red`. |
+    </Accordion>
+  </Tab>
+</Tabs>
 
 
 
