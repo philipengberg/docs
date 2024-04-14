@@ -50,8 +50,12 @@ GET /prices/{region}
 ---
 
 ## Prices including charges (Address lookup)
+The easiest way to get prices including charges is with a simple lookup.
+
+<Warning>This approach does *not* guarantee the same degree of accuracy as with [Eloverblik](#prices-including-charges-eloverblik).</Warning>
 
 ### Search address
+In order to get prices including charges you first need to get a valid address to make the lookup with.
 
 ```javascript
 GET /prices/suggestions?address={query}
