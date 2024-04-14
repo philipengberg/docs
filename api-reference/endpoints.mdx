@@ -51,9 +51,15 @@ GET /prices/{region}
 
 ## Spot prices incl. charges
 There are two overall approaches to get electricity prices including all charges.
+
+1. **Address lookup** - Using a free text address query to look up charges (98% accuracy)
+2. **Eloverblik** - Using end-user MitID to get household official charges (100% accuracy)
+
 <Tabs>
   <Tab title="Address lookup">
-    The easiest way to get prices including charges. This process only consists of 2 steps:
+    The easiest way to get prices including charges. 
+    
+    This process consists of **2** steps:
 
     <Steps>
     <Step title="Search addresses" icon="list" iconType="solid">
