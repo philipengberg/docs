@@ -52,18 +52,18 @@ GET /prices/{region}
 ## Prices including charges (Address lookup)
 The easiest way to get prices including charges is with a simple lookup.
 
-<Warning>This approach does *not* guarantee the same degree of accuracy of charges as with [Eloverblik]().</Warning>
-
 This process only consists of 2 steps:
 
 <Steps>
-  <Step title="Search address" icon="magnifying-glass" iconType="solid">
-  Search for the address with a free text string query and let the end user pick the right address
+  <Step title="Search addresses" icon="list" iconType="solid">
+  When the end-user has authorized access, you should display the list of addresses associated with the given user, so that they can select which address to get data from.
   </Step>
   <Step title="Get prices for address" icon="chart-simple" iconType="solid">
   You can now request electricity prices incl. all current and applicable charges.
   </Step>
 </Steps>
+
+<Warning>This approach does *not* guarantee the same degree of accuracy of charges as with [Eloverblik]().</Warning>
 
 ### Search address
 In order to get prices including charges you first need to get a valid address to make the lookup with.
