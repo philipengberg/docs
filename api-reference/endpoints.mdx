@@ -50,14 +50,56 @@ GET /prices/{region}
 ---
 
 ## Spot prices incl. charges
-There are two overall approaches to get electricity prices including all charges.
+There are three overall approaches to get electricity prices including all charges.
 
-1. **Address lookup** - Using a free text address query to look up charges (98% accuracy)
-2. **Eloverblik** - Using end-user MitID to get household official charges (100% accuracy)
+1. **Coordinate lookup** - Using lat/long to look up charges (98% accuracy)
+2. **Address lookup** - Using a free text address query to look up charges (98% accuracy)
+3. **Eloverblik** - Using end-user MitID to get household official charges (100% accuracy)
 
 <Tabs>
+  <Tab title="Coordinate lookup">
+    One of the easiest ways to get prices including charges. 
+
+    <Tip>This approach does *not* guarantee the same degree of accuracy of charges as with the **Eloverblik** approach.</Tip>
+
+    ```javascript
+    GET /prices/location?latitude={latitude}&longitude={longitude}
+    ```
+
+    <Accordion title="Parameters">
+    |   |   |   |   |
+    | - | - | - | - |
+    | `latitude` | Double | **Required** | The latitude |
+    | `longitude` | Double | **Required** | The longitude |
+    </Accordion>
+
+    <Accordion title="Response">
+    ```json
+    [
+        {
+            "date": "2023-10-12T14:00:00Z",
+            "price": 2.04095,
+            "charges": 1.4335,
+            "color": "yellow"
+        },
+        {
+            "date": "2023-10-12T15:00:00Z",
+            "price": 3.6294125,
+            "charges": 2.277875,
+            "color": "yellow"
+        }
+    ]
+    ```
+    | Parameter | Type | | Description |
+    | - | - | - |- |
+    | `date` | String | **Required** | ISO8601 timestamp of the price interval start |
+    | `price` | Double | **Required** | The *total* electricity price for that hour, but only spot price if charges are unavailable. |
+    | `charges` | Double | *Optional* | The total amount of charges. |
+    | `color` | String | *Optional* | The suggested color to show along with the `price`. This is dynamic based on `region` and whether `charges` are available or not. Possible values are: `green`, `yellow`, `red`. |
+    </Accordion>
+  </Tab>
   <Tab title="Address lookup">
-    The easiest way to get prices including charges. 
+    One of the easiest ways to get prices including charges. 
     
     This process consists of **2** steps:
 
