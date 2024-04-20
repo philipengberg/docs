@@ -332,3 +332,70 @@ GET /prices/{region}/forecast
 | `price` | Double | **Required** | The *total* electricity price for that hour, but only spot price if charges are unavailable. |
 </Accordion>
 
+---
+
+## Charges info
+
+Get full charges information for a specific location and date
+
+```javascript
+GET /prices/charges/location?latitude={latitude}&longitude={longitude}&date={date}
+```
+
+<Accordion title="Parameters">
+|   |   |   |   |
+| - | - | - | - |
+| `latitude` | Double | **Required** | The latitude |
+| `longitude` | Double | **Required** | The longitude |
+| `date` | Date | **Required** | ISO8601 timestamp of the price validity |
+</Accordion>
+
+<Accordion title="Response">
+```json
+{
+    "date": "2024-04-19T23:00:00Z",
+    "address": "Feldskovvej 1B, 3. mf., 4180 Sorø",
+    "subscriptions": [
+        {
+            "name": "TSO - System Abonnement",
+            "ownerName": "Energinet",
+            "price": 0.625
+        },
+        {
+            "name": "Net abo C forbrug time",
+            "ownerName": "Cerius A/S",
+            "price": 2.19791
+        }
+    ],
+    "tariffs": [
+        {
+            "name": "Transmissions nettarif",
+            "ownerName": "Energinet",
+            "price": 0.0925
+        },
+        {
+            "name": "Systemtarif",
+            "ownerName": "Energinet",
+            "price": 0.06375
+        },
+        {
+            "name": "Elafgift",
+            "ownerName": "Energinet",
+            "price": 0.95125
+        },
+        {
+            "name": "Nettarif C time",
+            "ownerName": "Cerius A/S",
+          	"price": 0.14075
+        }
+    ]
+}
+```
+| Parameter | Type | | Description |
+| - | - | - |- |
+| `date` | String | **Required** | ISO8601 timestamp of the price validity |
+| `address` | String | **Optional** | The *total* electricity price for that hour, but only spot price if charges are unavailable. |
+| `subscriptions` | Array | **Required** | A list of all applicable subscriptions |
+| `tariffs` | Array | **Required** | A list of all applicable tariffs |
+</Accordion>
+
