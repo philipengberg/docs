@@ -399,3 +399,32 @@ GET /prices/charges/location?latitude={latitude}&longitude={longitude}&date={dat
 | `tariffs` | Array | **Required** | A list of all applicable tariffs |
 </Accordion>
 
+---
+
+## Request count
+
+Get the running request count for your account
+
+```javascript
+GET /currentRequestCount
+```
+
+<Accordion title="Response">
+```json
+[
+    {
+        "date": "2024-05-16T22:00:00Z",
+        "requestCount": 1257
+    },
+    {
+        "date": "2024-05-17T22:00:00Z",
+        "requestCount": 1104
+    }
+]
+```
+| Parameter | Type | | Description |
+| - | - | - |- |
+| `date` | String | **Required** | ISO8601 timestamp of the day |
+| `requestCount` | Int | **Required** | The *total* requests logged for your account on the given `day` |
+</Accordion>
+
