@@ -49,18 +49,16 @@ GET /prices/{region}
 
 ---
 
-## Spot prices incl. charges
+## Full prices (incl. charges)
 There are three overall approaches to get electricity prices including all charges.
 
-1. **Coordinate lookup** - Using lat/long to look up charges (98% accuracy)
-2. **Address lookup** - Using a free text address query to look up charges (98% accuracy)
-3. **Eloverblik** - Using end-user MitID to get household official charges (100% accuracy)
+1. **Coordinate lookup** - Using lat/long to look up charges
+2. **Address lookup** - Using a free text address query to look up charges
+3. **Eloverblik** (for private consumers) - Using MitID to get household charges
 
 <Tabs>
   <Tab title="Coordinate lookup">
     One of the easiest ways to get prices including charges. 
-
-    <Tip>This approach does *not* guarantee the same degree of accuracy of charges as with the **Eloverblik** approach.</Tip>
 
     ```javascript
     GET /prices/location?latitude={latitude}&longitude={longitude}
@@ -99,7 +97,7 @@ There are three overall approaches to get electricity prices including all charg
     </Accordion>
   </Tab>
   <Tab title="Address lookup">
-    One of the easiest ways to get prices including charges. 
+    If you know the address of the user, this approach is the quickest way to get full electricity prices.
     
     This process consists of **2** steps:
 
@@ -112,7 +110,7 @@ There are three overall approaches to get electricity prices including all charg
     </Step>
     </Steps>
 
-    <Tip>This approach does *not* guarantee the same degree of accuracy of charges as with the **Eloverblik** approach.</Tip>
+    <Tip>If you already have the DAWA address ID, you can skip Step 1 and go directly to Step 2.</Tip>
 
     ### Search address
     In order to get prices including charges you first need to get a valid address to make the lookup with.
