@@ -227,11 +227,9 @@ There are three overall approaches to get electricity prices including all charg
     <Warning>
       This immediately redirects to the authorization page on Eloverblik.dk
     </Warning>
-    
     <Warning>
       Does NOT require authorization header
     </Warning>
-
     ### List addresses
 
     Get all addresses associated to a user.
@@ -406,9 +404,62 @@ GET /prices/charges/location?latitude={latitude}&longitude={longitude}&date={dat
   | Parameter       | Type   |              | Description                             |
   | --------------- | ------ | ------------ | --------------------------------------- |
   | `date`          | String | **Required** | ISO8601 timestamp of the price validity |
-  | `address`       | String | **Optional** | The address of the location             |
+  | `address`       | String | _Optional_   | The address of the location             |
   | `subscriptions` | Array  | **Required** | A list of all applicable subscriptions  |
   | `tariffs`       | Array  | **Required** | A list of all applicable tariffs        |
+</Accordion>
+
+---
+
+## Historic charges
+
+Get historical full charges information for a specific location and date range.
+
+```javascript
+GET /prices/charges/location/history?latitude={latitude}&longitude={longitude}&fromDate={fromDate}&toDate={toDate}
+```
+
+<Accordion title="Parameters">
+  |             | Type   |              | Description                                                                                        |
+  | ----------- | ------ | ------------ | -------------------------------------------------------------------------------------------------- |
+  | `latitude`  | Double | **Required** | The latitude of the location                                                                       |
+  | `longitude` | Double | **Required** | The longitude of the location                                                                      |
+  | `fromDate`  | String | **Required** | ISO8601 timestamp marking the start of the date range (inclusive)                                  |
+  | `toDate`    | String | _Optional_   | ISO8601 timestamp marking the end of the date range (exclusive). Defaults to the current date/time |
+</Accordion>
+
+<Accordion title="Response">
+  ```json
+  {
+      "from": "2025-02-14T21:31:50Z",
+      "to": "2025-05-14T21:31:50Z",
+      "tariffs": [
+          {
+              "price": { "static": { "price": 0.9 } },
+              "ownerName": "Energinet",
+              "name": "Elafgift",
+              "from": "2024-12-31T23:00:00Z"
+          },
+          // ... additional tariff entries ...
+      ],
+      "subscriptions": [
+          {
+              "name": "Net abo C forbrug",
+              "price": { "static": { "price": 26.686367 } },
+              "ownerName": "N1 A/S - 131",
+              "from": "2024-12-31T23:00:00Z"
+          },
+          // ... additional subscription entries ...
+      ]
+  }
+  ```
+
+  | Parameter       | Type   |              | Description                                       |
+  | --------------- | ------ | ------------ | ------------------------------------------------- |
+  | `from`          | String | **Required** | ISO8601 timestamp marking the start of the period |
+  | `to`            | String | _Optional_   | ISO8601 timestamp marking the end of the period   |
+  | `tariffs`       | Array  | **Required** | List of tariffs with time intervals               |
+  | `subscriptions` | Array  | **Required** | List of subscriptions with time intervals         |
 </Accordion>
 
 ---
