@@ -1,11 +1,12 @@
 ---
-title: 'Endpoints'
-description: ''
-icon: 'server'
+title: "Endpoints"
+icon: "server"
 ---
 
 ## Base URL
+
 The Min Strøm API is accessed through the following base URL:
+
 ```
 https://api.minstroem.app/thirdParty
 ```
@@ -13,6 +14,7 @@ https://api.minstroem.app/thirdParty
 ---
 
 ## Spot prices
+
 Get the future hourly electricity spot prices excl. charges.
 
 ```javascript
@@ -20,36 +22,38 @@ GET /prices/{region}
 ```
 
 <Accordion title="Parameters">
-|   |   |   |   |
-| - | - | - | - |
-| `region` | String | **Required** | See [Regions](/api-reference/shared#regions) for possible values |
+  |          |        |              |                                                                  |
+  | -------- | ------ | ------------ | ---------------------------------------------------------------- |
+  | `region` | String | **Required** | See [Regions](/api-reference/shared#regions) for possible values |
 </Accordion>
 
 <Accordion title="Response">
-```json
-[
-    {
-        "date": "2023-10-12T14:00:00Z",
-        "price": 2.04095,
-        "color": "yellow"
-    },
-    {
-        "date": "2023-10-12T15:00:00Z",
-        "price": 3.6294125,
-        "color": "yellow"
-    }
-]
-```
-| Parameter | Type | | Description |
-| - | - | - |- |
-| `date` | String | **Required** | ISO8601 timestamp of the price interval start |
-| `price` | Double | **Required** | The *total* electricity price for that hour, but only spot price if charges are unavailable. |
-| `color` | String | *Optional* | The suggested color to show along with the `price`. This is dynamic based on `region` and whether `charges` are available or not. Possible values are: `green`, `yellow`, `red`. |
+  ```json
+  [
+      {
+          "date": "2023-10-12T14:00:00Z",
+          "price": 2.04095,
+          "color": "yellow"
+      },
+      {
+          "date": "2023-10-12T15:00:00Z",
+          "price": 3.6294125,
+          "color": "yellow"
+      }
+  ]
+  ```
+
+  | Parameter | Type   |              | Description                                                                                                                                                                      |
+  | --------- | ------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | `date`    | String | **Required** | ISO8601 timestamp of the price interval start                                                                                                                                    |
+  | `price`   | Double | **Required** | The _total_ electricity price for that hour, but only spot price if charges are unavailable.                                                                                     |
+  | `color`   | String | _Optional_   | The suggested color to show along with the `price`. This is dynamic based on `region` and whether `charges` are available or not. Possible values are: `green`, `yellow`, `red`. |
 </Accordion>
 
 ---
 
 ## Full prices (incl. charges)
+
 There are three overall approaches to get electricity prices including all charges.
 
 1. **Coordinate lookup** - Using lat/long to look up charges
@@ -58,61 +62,62 @@ There are three overall approaches to get electricity prices including all charg
 
 <Tabs>
   <Tab title="Coordinate lookup">
-    One of the easiest ways to get prices including charges. 
+    One of the easiest ways to get prices including charges.
 
     ```javascript
     GET /prices/location?latitude={latitude}&longitude={longitude}
     ```
 
     <Accordion title="Parameters">
-    |   |   |   |   |
-    | - | - | - | - |
-    | `latitude` | Double | **Required** | The latitude |
-    | `longitude` | Double | **Required** | The longitude |
+      |             |        |              |               |
+      | ----------- | ------ | ------------ | ------------- |
+      | `latitude`  | Double | **Required** | The latitude  |
+      | `longitude` | Double | **Required** | The longitude |
     </Accordion>
-
     <Accordion title="Response">
-    ```json
-    [
-        {
-            "date": "2023-10-12T14:00:00Z",
-            "price": 2.04095,
-            "charges": 1.4335,
-            "color": "yellow"
-        },
-        {
-            "date": "2023-10-12T15:00:00Z",
-            "price": 3.6294125,
-            "charges": 2.277875,
-            "color": "yellow"
-        }
-    ]
-    ```
-    | Parameter | Type | | Description |
-    | - | - | - |- |
-    | `date` | String | **Required** | ISO8601 timestamp of the price interval start |
-    | `price` | Double | **Required** | The *total* electricity price for that hour, but only spot price if charges are unavailable. |
-    | `charges` | Double | *Optional* | The total amount of charges. |
-    | `color` | String | *Optional* | The suggested color to show along with the `price`. This is dynamic based on `region` and whether `charges` are available or not. Possible values are: `green`, `yellow`, `red`. |
+      ```json
+      [
+          {
+              "date": "2023-10-12T14:00:00Z",
+              "price": 2.04095,
+              "charges": 1.4335,
+              "color": "yellow"
+          },
+          {
+              "date": "2023-10-12T15:00:00Z",
+              "price": 3.6294125,
+              "charges": 2.277875,
+              "color": "yellow"
+          }
+      ]
+      ```
+
+      | Parameter | Type   |              | Description                                                                                                                                                                      |
+      | --------- | ------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+      | `date`    | String | **Required** | ISO8601 timestamp of the price interval start                                                                                                                                    |
+      | `price`   | Double | **Required** | The _total_ electricity price for that hour, but only spot price if charges are unavailable.                                                                                     |
+      | `charges` | Double | _Optional_   | The total amount of charges.                                                                                                                                                     |
+      | `color`   | String | _Optional_   | The suggested color to show along with the `price`. This is dynamic based on `region` and whether `charges` are available or not. Possible values are: `green`, `yellow`, `red`. |
     </Accordion>
   </Tab>
   <Tab title="Address lookup">
     If you know the address of the user, this approach is the quickest way to get full electricity prices.
-    
+
     This process consists of **2** steps:
 
     <Steps>
-    <Step title="Search addresses" icon="magnifying-glass" iconType="solid">
-    When the end-user has authorized access, you should display the list of addresses associated with the given user, so that they can select which address to get data from.
-    </Step>
-    <Step title="Get prices for address" icon="chart-simple" iconType="solid">
-    You can now request electricity prices incl. all current and applicable charges.
-    </Step>
+      <Step title="Search addresses" icon="magnifying-glass" iconType="solid">
+        When the end-user has authorized access, you should display the list of addresses associated with the given user, so that they can select which address to get data from.
+      </Step>
+      <Step title="Get prices for address" icon="chart-simple" iconType="solid">
+        You can now request electricity prices incl. all current and applicable charges.
+      </Step>
     </Steps>
-
-    <Tip>If you already have the DAWA address ID, you can skip Step 1 and go directly to Step 2.</Tip>
-
+    <Tip>
+      If you already have the DAWA address ID, you can skip Step 1 and go directly to Step 2.
+    </Tip>
     ### Search address
+
     In order to get prices including charges you first need to get a valid address to make the lookup with.
 
     ```javascript
@@ -120,39 +125,39 @@ There are three overall approaches to get electricity prices including all charg
     ```
 
     <Accordion title="Parameters">
-    |   |   |   |   |
-    | - | - | - | - |
-    | `query` | String | **Required** | The free text address query to search for |
+      |         |        |              |                                           |
+      | ------- | ------ | ------------ | ----------------------------------------- |
+      | `query` | String | **Required** | The free text address query to search for |
     </Accordion>
-
     <Accordion title="Response">
-    ```json
-    [
-        {
-            "id": "645db24a-f11a-3388-e044-0003ba298018",
-            "suggestion": "Solbakkevej 11, 2630 Taastrup, 2. tv.",
-            "streetName": "Solbakkevej",
-            "streetNumber": "11",
-            "floor": "2",
-            "door": "tv",
-            "zipCode": "2630",
-            "city": "Taastrup",
-        }
-    ]
-    ```
-    | Parameter | Type | | Description |
-    | - | - | - |- |
-    | `id` | String | **Required** | The ID of the address to pass on to subsequent endpoints as parameter |
-    | `suggestion` | String | **Required** | The full text string representation of the address to show to the user |
-    | `streetName` | String | *Optional* | The street name |
-    | `streetNumber` | String | *Optional* | The street number |
-    | `floor` | String | *Optional* | The floor |
-    | `door` | String | *Optional* | The door |
-    | `zipCode` | String | *Optional* | The zip code |
-    | `city` | String | *Optional* | The city |
-    </Accordion>
+      ```json
+      [
+          {
+              "id": "645db24a-f11a-3388-e044-0003ba298018",
+              "suggestion": "Solbakkevej 11, 2630 Taastrup, 2. tv.",
+              "streetName": "Solbakkevej",
+              "streetNumber": "11",
+              "floor": "2",
+              "door": "tv",
+              "zipCode": "2630",
+              "city": "Taastrup",
+          }
+      ]
+      ```
 
+      | Parameter      | Type   |              | Description                                                            |
+      | -------------- | ------ | ------------ | ---------------------------------------------------------------------- |
+      | `id`           | String | **Required** | The ID of the address to pass on to subsequent endpoints as parameter  |
+      | `suggestion`   | String | **Required** | The full text string representation of the address to show to the user |
+      | `streetName`   | String | _Optional_   | The street name                                                        |
+      | `streetNumber` | String | _Optional_   | The street number                                                      |
+      | `floor`        | String | _Optional_   | The floor                                                              |
+      | `door`         | String | _Optional_   | The door                                                               |
+      | `zipCode`      | String | _Optional_   | The zip code                                                           |
+      | `city`         | String | _Optional_   | The city                                                               |
+    </Accordion>
     ### Get prices for address
+
     With a valid address you can now lookup prices including charges (best effort):
 
     ```javascript
@@ -160,68 +165,75 @@ There are three overall approaches to get electricity prices including all charg
     ```
 
     <Accordion title="Parameters">
-    |   |   |   |   |
-    | - | - | - | - |
-    | `addressId` | String | **Required** | The address ID returned from the address susgestion endpoint. |
+      |             |        |              |                                                               |
+      | ----------- | ------ | ------------ | ------------------------------------------------------------- |
+      | `addressId` | String | **Required** | The address ID returned from the address susgestion endpoint. |
     </Accordion>
-
     <Accordion title="Response">
-    ```json
-    [
-        {
-            "date": "2023-10-12T14:00:00Z",
-            "price": 2.04095,
-            "charges": 1.4335,
-            "color": "yellow"
-        },
-        {
-            "date": "2023-10-12T15:00:00Z",
-            "price": 3.6294125,
-            "charges": 2.277875,
-            "color": "yellow"
-        }
-    ]
-    ```
-    | Parameter | Type | | Description |
-    | - | - | - |- |
-    | `date` | String | **Required** | ISO8601 timestamp of the price interval start |
-    | `price` | Double | **Required** | The *total* electricity price for that hour, but only spot price if charges are unavailable. |
-    | `charges` | Double | *Optional* | The total amount of charges. |
-    | `color` | String | *Optional* | The suggested color to show along with the `price`. This is dynamic based on `region` and whether `charges` are available or not. Possible values are: `green`, `yellow`, `red`. |
+      ```json
+      [
+          {
+              "date": "2023-10-12T14:00:00Z",
+              "price": 2.04095,
+              "charges": 1.4335,
+              "color": "yellow"
+          },
+          {
+              "date": "2023-10-12T15:00:00Z",
+              "price": 3.6294125,
+              "charges": 2.277875,
+              "color": "yellow"
+          }
+      ]
+      ```
+
+      | Parameter | Type   |              | Description                                                                                                                                                                      |
+      | --------- | ------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+      | `date`    | String | **Required** | ISO8601 timestamp of the price interval start                                                                                                                                    |
+      | `price`   | Double | **Required** | The _total_ electricity price for that hour, but only spot price if charges are unavailable.                                                                                     |
+      | `charges` | Double | _Optional_   | The total amount of charges.                                                                                                                                                     |
+      | `color`   | String | _Optional_   | The suggested color to show along with the `price`. This is dynamic based on `region` and whether `charges` are available or not. Possible values are: `green`, `yellow`, `red`. |
     </Accordion>
   </Tab>
   <Tab title="Eloverblik">
     To get electricity **precise** prices including all current and applicable charges, the end user must grant access to their household data through the public energy portal [**Eloverblik**](https://eloverblik.dk).
 
     This process consists of **3** steps:
+
     <Steps>
-    <Step title="Grant access" icon="lock-open" iconType="solid">
-    In order to get access to all current and applicable charges for a given household, the end-user must first authorize access. This is achieved by logging in with [**MitID**](https://www.mitid.dk/) through [**Eloverblik**](https://eloverblik.dk).
-    </Step>
-    <Step title="List addresses" icon="list" iconType="solid">
-    When the end-user has authorized access, you should display the list of addresses associated with the given user, so that they can select which address to get data from.
-    </Step>
-    <Step title="Get prices for address" icon="chart-simple" iconType="solid">
-    You can now request electricity prices incl. all current and applicable charges.
-    </Step>
+      <Step title="Grant access" icon="lock-open" iconType="solid">
+        In order to get access to all current and applicable charges for a given household, the end-user must first authorize access. This is achieved by logging in with [**MitID**](https://www.mitid.dk/) through [**Eloverblik**](https://eloverblik.dk).
+      </Step>
+      <Step title="List addresses" icon="list" iconType="solid">
+        When the end-user has authorized access, you should display the list of addresses associated with the given user, so that they can select which address to get data from.
+      </Step>
+      <Step title="Get prices for address" icon="chart-simple" iconType="solid">
+        You can now request electricity prices incl. all current and applicable charges.
+      </Step>
     </Steps>
-
-
     ### Grant access
+
     Generate an authorization link to present a web view that will allow the user to authorize access to their household data, incl. all charges.
+
     ```javascript
     GET /users/{userId}/connectAddress
     ```
-    <Accordion title="Parameters">
-    |  |  | |  |
-    | - | - | - |- |
-    | `userId` | String | **Required** | The ID of the user in your system |
-    </Accordion>
 
-    <Warning>This immediately redirects to the authorization page on Eloverblik.dk</Warning>
-    <Warning>Does NOT require authorization header</Warning>
+    <Accordion title="Parameters">
+      |          |        |              |                                   |
+      | -------- | ------ | ------------ | --------------------------------- |
+      | `userId` | String | **Required** | The ID of the user in your system |
+    </Accordion>
+    <Warning>
+      This immediately redirects to the authorization page on Eloverblik.dk
+    </Warning>
+    
+    <Warning>
+      Does NOT require authorization header
+    </Warning>
 
     ### List addresses
+
     Get all addresses associated to a user.
 
     ```javascript
@@ -229,33 +241,32 @@ There are three overall approaches to get electricity prices including all charg
     ```
 
     <Accordion title="Parameters">
-    |  |  | |  |
-    | - | - | - |- |
-    | `userId` | String | **Required** | The ID of the user in your system |
+      |          |        |              |                                   |
+      | -------- | ------ | ------------ | --------------------------------- |
+      | `userId` | String | **Required** | The ID of the user in your system |
     </Accordion>
-
     <Accordion title="Response">
-    ```json
-    [
-        {
-            "id": "571313174032556653"
-            "address": "Æblevej 1A, 2. th.",
-            "fullAddress": "Æblevej 1A, 2. th, 2200 København N",
-        },
-        {
-            "id": "571313181101102422"
-            "address": "Appelsinvej 243",
-            "fullAddress": "Appelsinvej 243, 4200 Slagelse",
-        }
-    ]
-    ```
-    | Parameter | Type | | Description |
-    | - | - | - |- |
-    | `id` | String | **Required** | Unique ID of the address. Used to include charges on [/prices](#electricity-prices) endpoint. |
-    | `address` | String | **Required** | A short version of the address, suitable to show in UI. |
-    | `fullAddress` | String | **Required** | The full address. |
-    </Accordion>
+      ```json
+      [
+          {
+              "id": "571313174032556653"
+              "address": "Æblevej 1A, 2. th.",
+              "fullAddress": "Æblevej 1A, 2. th, 2200 København N",
+          },
+          {
+              "id": "571313181101102422"
+              "address": "Appelsinvej 243",
+              "fullAddress": "Appelsinvej 243, 4200 Slagelse",
+          }
+      ]
+      ```
 
+      | Parameter     | Type   |              | Description                                                                                   |
+      | ------------- | ------ | ------------ | --------------------------------------------------------------------------------------------- |
+      | `id`          | String | **Required** | Unique ID of the address. Used to include charges on [/prices](#electricity-prices) endpoint. |
+      | `address`     | String | **Required** | A short version of the address, suitable to show in UI.                                       |
+      | `fullAddress` | String | **Required** | The full address.                                                                             |
+    </Accordion>
     ### Get prices for address
 
     ```javascript
@@ -263,35 +274,35 @@ There are three overall approaches to get electricity prices including all charg
     ```
 
     <Accordion title="Parameters">
-    |   |   |   |   |
-    | - | - | - | - |
-    | `region` | String | **Required** | See [Regions](/api-reference/shared#regions) for possible values |
-    | `addressId` | String | *Optional* | The ID of a connected address. If available, this will include all charges for the address in the electricity price. |
+      |             |        |              |                                                                                                                      |
+      | ----------- | ------ | ------------ | -------------------------------------------------------------------------------------------------------------------- |
+      | `region`    | String | **Required** | See [Regions](/api-reference/shared#regions) for possible values                                                     |
+      | `addressId` | String | _Optional_   | The ID of a connected address. If available, this will include all charges for the address in the electricity price. |
     </Accordion>
-
     <Accordion title="Response">
-    ```json
-    [
-        {
-            "date": "2023-10-12T14:00:00Z",
-            "price": 2.04095,
-            "charges": 1.4335,
-            "color": "yellow"
-        },
-        {
-            "date": "2023-10-12T15:00:00Z",
-            "price": 3.6294125,
-            "charges": 2.277875,
-            "color": "yellow"
-        }
-    ]
-    ```
-    | Parameter | Type | | Description |
-    | - | - | - |- |
-    | `date` | String | **Required** | ISO8601 timestamp of the price interval start |
-    | `price` | Double | **Required** | The *total* electricity price for that hour, but only spot price if charges are unavailable. |
-    | `charges` | Double | *Optional* | The total amount of charges. |
-    | `color` | String | *Optional* | The suggested color to show along with the `price`. This is dynamic based on `region` and whether `charges` are available or not. Possible values are: `green`, `yellow`, `red`. |
+      ```json
+      [
+          {
+              "date": "2023-10-12T14:00:00Z",
+              "price": 2.04095,
+              "charges": 1.4335,
+              "color": "yellow"
+          },
+          {
+              "date": "2023-10-12T15:00:00Z",
+              "price": 3.6294125,
+              "charges": 2.277875,
+              "color": "yellow"
+          }
+      ]
+      ```
+
+      | Parameter | Type   |              | Description                                                                                                                                                                      |
+      | --------- | ------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+      | `date`    | String | **Required** | ISO8601 timestamp of the price interval start                                                                                                                                    |
+      | `price`   | Double | **Required** | The _total_ electricity price for that hour, but only spot price if charges are unavailable.                                                                                     |
+      | `charges` | Double | _Optional_   | The total amount of charges.                                                                                                                                                     |
+      | `color`   | String | _Optional_   | The suggested color to show along with the `price`. This is dynamic based on `region` and whether `charges` are available or not. Possible values are: `green`, `yellow`, `red`. |
     </Accordion>
   </Tab>
 </Tabs>
@@ -299,6 +310,7 @@ There are three overall approaches to get electricity prices including all charg
 ---
 
 ## Forecast spot prices
+
 Get unconfirmed future hourly electricity prices up to **7 days** into the future.
 
 ```javascript
@@ -306,28 +318,29 @@ GET /prices/{region}/forecast
 ```
 
 <Accordion title="Parameters">
-|   |   |   |   |
-| - | - | - | - |
-| `region` | String | **Required** | See [Regions](/api-reference/shared#regions) for possible values |
+  |          |        |              |                                                                  |
+  | -------- | ------ | ------------ | ---------------------------------------------------------------- |
+  | `region` | String | **Required** | See [Regions](/api-reference/shared#regions) for possible values |
 </Accordion>
 
 <Accordion title="Response">
-```json
-[
-    {
-        "date": "2023-10-12T14:00:00Z",
-        "price": 1.04095
-    },
-    {
-        "date": "2023-10-12T15:00:00Z",
-        "price": 1.6294125
-    }
-]
-```
-| Parameter | Type | | Description |
-| - | - | - |- |
-| `date` | String | **Required** | ISO8601 timestamp of the price interval start |
-| `price` | Double | **Required** | The *total* electricity price for that hour, but only spot price if charges are unavailable. |
+  ```json
+  [
+      {
+          "date": "2023-10-12T14:00:00Z",
+          "price": 1.04095
+      },
+      {
+          "date": "2023-10-12T15:00:00Z",
+          "price": 1.6294125
+      }
+  ]
+  ```
+
+  | Parameter | Type   |              | Description                                                                                  |
+  | --------- | ------ | ------------ | -------------------------------------------------------------------------------------------- |
+  | `date`    | String | **Required** | ISO8601 timestamp of the price interval start                                                |
+  | `price`   | Double | **Required** | The _total_ electricity price for that hour, but only spot price if charges are unavailable. |
 </Accordion>
 
 ---
@@ -341,60 +354,61 @@ GET /prices/charges/location?latitude={latitude}&longitude={longitude}&date={dat
 ```
 
 <Accordion title="Parameters">
-|   |   |   |   |
-| - | - | - | - |
-| `latitude` | Double | **Required** | The latitude |
-| `longitude` | Double | **Required** | The longitude |
-| `date` | Date | **Required** | ISO8601 timestamp of the price validity |
+  |             |        |              |                                         |
+  | ----------- | ------ | ------------ | --------------------------------------- |
+  | `latitude`  | Double | **Required** | The latitude                            |
+  | `longitude` | Double | **Required** | The longitude                           |
+  | `date`      | Date   | **Required** | ISO8601 timestamp of the price validity |
 </Accordion>
 
 <Accordion title="Response">
-```json
-{
-    "date": "2024-04-19T23:00:00Z",
-    "address": "Feldskovvej 1B, 3. mf., 4180 Sorø",
-    "subscriptions": [
-        {
-            "name": "TSO - System Abonnement",
-            "ownerName": "Energinet",
-            "price": 0.625
-        },
-        {
-            "name": "Net abo C forbrug time",
-            "ownerName": "Cerius A/S",
-            "price": 2.19791
-        }
-    ],
-    "tariffs": [
-        {
-            "name": "Transmissions nettarif",
-            "ownerName": "Energinet",
-            "price": 0.0925
-        },
-        {
-            "name": "Systemtarif",
-            "ownerName": "Energinet",
-            "price": 0.06375
-        },
-        {
-            "name": "Elafgift",
-            "ownerName": "Energinet",
-            "price": 0.95125
-        },
-        {
-            "name": "Nettarif C time",
-            "ownerName": "Cerius A/S",
-          	"price": 0.14075
-        }
-    ]
-}
-```
-| Parameter | Type | | Description |
-| - | - | - |- |
-| `date` | String | **Required** | ISO8601 timestamp of the price validity |
-| `address` | String | **Optional** | The *total* electricity price for that hour, but only spot price if charges are unavailable. |
-| `subscriptions` | Array | **Required** | A list of all applicable subscriptions |
-| `tariffs` | Array | **Required** | A list of all applicable tariffs |
+  ```json
+  {
+      "date": "2024-04-19T23:00:00Z",
+      "address": "Feldskovvej 1B, 3. mf., 4180 Sorø",
+      "subscriptions": [
+          {
+              "name": "TSO - System Abonnement",
+              "ownerName": "Energinet",
+              "price": 0.625
+          },
+          {
+              "name": "Net abo C forbrug time",
+              "ownerName": "Cerius A/S",
+              "price": 2.19791
+          }
+      ],
+      "tariffs": [
+          {
+              "name": "Transmissions nettarif",
+              "ownerName": "Energinet",
+              "price": 0.0925
+          },
+          {
+              "name": "Systemtarif",
+              "ownerName": "Energinet",
+              "price": 0.06375
+          },
+          {
+              "name": "Elafgift",
+              "ownerName": "Energinet",
+              "price": 0.95125
+          },
+          {
+              "name": "Nettarif C time",
+              "ownerName": "Cerius A/S",
+            	"price": 0.14075
+          }
+      ]
+  }
+  ```
+
+  | Parameter       | Type   |              | Description                             |
+  | --------------- | ------ | ------------ | --------------------------------------- |
+  | `date`          | String | **Required** | ISO8601 timestamp of the price validity |
+  | `address`       | String | **Optional** | The address of the location             |
+  | `subscriptions` | Array  | **Required** | A list of all applicable subscriptions  |
+  | `tariffs`       | Array  | **Required** | A list of all applicable tariffs        |
 </Accordion>
 
 ---
@@ -408,21 +422,21 @@ GET /currentRequestCount
 ```
 
 <Accordion title="Response">
-```json
-[
-    {
-        "date": "2024-05-16T22:00:00Z",
-        "requestCount": 1257
-    },
-    {
-        "date": "2024-05-17T22:00:00Z",
-        "requestCount": 1104
-    }
-]
-```
-| Parameter | Type | | Description |
-| - | - | - |- |
-| `date` | String | **Required** | ISO8601 timestamp of the day |
-| `requestCount` | Int | **Required** | The *total* requests logged for your account on the given `day` |
-</Accordion>
+  ```json
+  [
+      {
+          "date": "2024-05-16T22:00:00Z",
+          "requestCount": 1257
+      },
+      {
+          "date": "2024-05-17T22:00:00Z",
+          "requestCount": 1104
+      }
+  ]
+  ```
 
+  | Parameter      | Type   |              | Description                                                     |
+  | -------------- | ------ | ------------ | --------------------------------------------------------------- |
+  | `date`         | String | **Required** | ISO8601 timestamp of the day                                    |
+  | `requestCount` | Int    | **Required** | The _total_ requests logged for your account on the given `day` |
+</Accordion>
