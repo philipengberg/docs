@@ -1,0 +1,85 @@
+---
+title: "Data interpretation"
+description: "Understand missing readings, estimates, and calculated amounts."
+icon: "chart-line"
+---
+
+## Missing is not zero
+
+Series are sorted ascending and may be sparse or empty. The API does not insert zero readings to fill gaps. Provider availability, source coverage, meter-access bounds, and existing best-effort loading can all reduce the returned data.
+
+For a request covering 10:00–13:00 UTC, this synthetic hourly response contains **no information** about 11:00–12:00:
+
+```json
+{
+  "addressId": "2b4bf7a8-b5d0-45ab-8d42-3a5688bba167",
+  "from": "2026-09-05T10:00:00Z",
+  "to": "2026-09-05T13:00:00Z",
+  "aggregation": "hour",
+  "timeZone": "Europe/Copenhagen",
+  "data": [
+    {
+      "start": "2026-09-05T10:00:00Z",
+      "end": "2026-09-05T11:00:00Z",
+      "energyKWh": 1.2,
+      "isEstimate": false
+    },
+    {
+      "start": "2026-09-05T12:00:00Z",
+      "end": "2026-09-05T13:00:00Z",
+      "energyKWh": 0,
+      "isEstimate": false
+    }
+  ]
+}
+```
+
+The returned energy sums to 1.2 kWh, but that is not a verified total for the three-hour period. The second row reports a known zero; the missing middle row does not.
+
+A `200` response means the request succeeded, **not that the period is complete**. An empty array does not prove there was no usage. Keep missing intervals unknown in charts and reports. Daily or larger aggregates can themselves be based on incomplete underlying data.
+
+## Estimates and nulls
+
+Usage, cost, and revenue intervals expose `isEstimate`. A true value flags estimated data; false is not a completeness guarantee. The forecast envelope has `isEstimate: true`, including when its data array is empty.
+
+Nullable values are explicitly `null`, not omitted. For example:
+
+- Unknown variable price charges are null, not zero.
+- Cost/revenue effective rates are null when energy is zero, even when fixed fees or monetary amounts exist.
+- Missing grid or supplier names are null.
+
+Do not silently substitute zero for a null component.
+
+## Energy, currency, and VAT
+
+`energyKWh` is measured in kWh; there is no separate `unit` property. Monetary envelopes state `currency` and `vatIncluded`.
+
+Prices and consumption costs include VAT. Solar-export revenue excludes VAT. Rates are currency per kWh; fixed fees and totals are amounts in the stated currency. Regional currencies are DKK, SEK, or NOK; there is no currency conversion.
+
+Non-Danish address prices do not include Danish grid, system, or electricity-tax charges. Missing agreement or grid information does not suppress known price components. A returned price is therefore not a promise that all charges on a supplier's bill are known.
+
+## Calculated costs and revenue
+
+These endpoints reuse the app's existing calculations and native aggregation, including tax and settlement behavior.
+
+For each returned cost interval:
+
+`totalPricePerKWh = (totalCost - fixedFeesForInterval) / energyKWh`
+
+For each returned revenue interval:
+
+`totalPricePerKWh = (netRevenue + fixedFeesForInterval) / energyKWh`
+
+The rate excludes the fixed fee. At zero energy, the rate is null. Negative rates and amounts are valid; do not clamp them.
+
+For example, 2 kWh, a total cost of 4.60 DKK, and fixed fees of 0.10 DKK give an effective rate of 2.25 DKK/kWh. A separate zero-energy row may still contain a fixed fee, so multiplying energy by a rate is not sufficient to reconstruct totals.
+
+Fixed fees use the existing app allocation conventions. Do not assume summing them reproduces an exact monthly invoice fee in every DST month. Different aggregations, missing readings or price inputs, settlement rules, and bill-only items can affect reconciliation.
+
+## Price precision and billing
+
+Historical and forecast `totalPricePerKWh` and `variableChargesPerKWh` are rounded to three decimal places. JSON does not guarantee trailing zeros: 1.2 is as valid as 1.200. Price responses contain no fixed-fee allocation.
+
+Rounding applies only to these two price fields, not energy, cost/revenue rates, fixed fees, or totals. For example, an underlying rate of 1.2344 appears as 1.234. Multiplying that rounded rate by 100 kWh gives 123.40 rather than 123.44.
+
+Use the calculated cost/revenue endpoint for the app's calculated amounts. Even those returned totals need not reconstruct a complete bill: missing data is not filled, not every billing component is necessarily known, and a successful response is not a completeness certification.

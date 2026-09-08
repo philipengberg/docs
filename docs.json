@@ -54,6 +54,30 @@
               "introduction",
               "consumer-api/quickstart"
             ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "consumer-api/authentication",
+              "consumer-api/addresses",
+              "consumer-api/time-and-ranges",
+              "consumer-api/data-interpretation",
+              "consumer-api/forecasts",
+              "consumer-api/errors-and-limits",
+              "consumer-api/troubleshooting"
+            ]
+          },
+          {
+            "group": "API reference",
+            "pages": [
+              "consumer-api/reference/list-addresses",
+              "consumer-api/reference/consumption",
+              "consumer-api/reference/solar-export",
+              "consumer-api/reference/consumption-costs",
+              "consumer-api/reference/solar-export-revenue",
+              "consumer-api/reference/prices",
+              "consumer-api/reference/forecast-prices"
+            ]
           }
         ]
       },
@@ -74,6 +98,7 @@
     ]
   },
   "api": {
+    "openapi": "api-reference/openapi.json",
     "playground": {
       "display": "none"
     },

@@ -1,0 +1,75 @@
+---
+title: "Errors and limits"
+description: "Stable error codes, request IDs, and shared request budgets."
+icon: "triangle-exclamation"
+---
+
+## Error responses
+
+Consumer API failures use the backend's flat JSON shape:
+
+```json
+{
+  "error": true,
+  "reason": "An active Min Strøm Plus subscription is required.",
+  "errorCode": "plus_required"
+}
+```
+
+Use HTTP status and `errorCode` for program logic. `reason` is human-readable and may change. Consumer route failures populate the stable code at the top level.
+
+| Status | Code | Action |
+| --- | --- | --- |
+| 400 | `invalid_parameter` | Correct required parameters, timestamps, or interval values. Forecasts accept no query parameters. |
+| 400 | `invalid_range` | Make the start earlier than the end. |
+| 400 | `range_too_large` | Split the range using aligned boundaries; limits apply after expansion. |
+| 401 | `invalid_token` | Check the bearer header and environment; replace a revoked or lost key. |
+| 401 | `credential_expired` | Replace the expired key in iOS. |
+| 403 | `plus_required` | Restore an active Plus subscription. |
+| 403 | `forbidden` | Access is denied for a reason other than Plus; do not treat every 403 as a purchase prompt. |
+| 404 | `resource_not_found` | Re-list your addresses and use a returned ID. |
+| 422 | `feature_unavailable` | Check the address's capability and configuration. |
+| 429 | `rate_limited` | Wait at least `Retry-After` seconds. |
+| 500 | `internal_error` | Retry with backoff; contact support if persistent. |
+| 502 | `upstream_unavailable` | An identifiable provider failure occurred; retry with backoff. |
+| 503 | `entitlement_unavailable` | Plus verification is unavailable; retry later. |
+| 503 | `rate_limiter_unavailable` | Request limiting is unavailable; retry later. |
+
+Address ownership denials specifically return 404, just like unknown or deleted addresses; they are not a Plus failure. The shared backend contract also distinguishes `forbidden` from `plus_required`, including in the app's credential-management flow.
+
+Not every legacy provider failure is distinguishable: some surface as a sanitized 500, and existing best-effort loading can return sparse or empty data successfully. See [Data interpretation](/consumer-api/data-interpretation).
+
+## Request and cache headers
+
+Responses handled by Consumer routes include `X-Request-ID` and `Cache-Control: private, no-store`, including errors. Request IDs are in headers, not the body. You may send a single UUID in `X-Request-ID`; invalid values are replaced.
+
+Include the response request ID and endpoint when contacting [support](mailto:engberg@minstroem.app). Never include your key or authorization header.
+
+Unmatched URLs are handled by the backend's general 404 handling, not the Consumer route boundary; do not assume they carry Consumer-specific headers or a code.
+
+## Shared per-user limits
+
+The default limits are **60 attempts per UTC minute** and **2,000 attempts per UTC day**, shared by all integrations using the same account. Use the returned headers as the effective configured limits.
+
+Windows reset at UTC minute boundaries and midnight UTC—not Copenhagen midnight. Replacing a credential does not reset these budgets.
+
+Counting starts after successful authentication and Plus verification. Requests then count even if ownership, capability, validation, or a provider fails. Quota-denied attempts also count. Authentication and Plus denials do not count. There are no refunds.
+
+Both windows are incremented together. Repeatedly retrying a minute-limit failure can exhaust your daily budget too.
+
+## Read the quota headers
+
+After quota evaluation, responses retain these headers even when a later operation fails:
+
+| Header | Meaning |
+| --- | --- |
+| `X-RateLimit-Limit-Minute` / `X-RateLimit-Limit-Day` | Configured limits |
+| `X-RateLimit-Remaining-Minute` / `X-RateLimit-Remaining-Day` | Remaining attempts, never negative |
+| `X-RateLimit-Reset-Minute` / `X-RateLimit-Reset-Day` | Reset instants as Unix seconds |
+| `Retry-After` | Seconds to wait on a 429 |
+
+For example, a 429 with `Retry-After: 42` means wait at least 42 seconds before another attempt. If both windows are exhausted, it reflects the later reset. Do not retry every second.
+
+Authentication/Plus failures occur before quota checks and do not have quota results. If Redis is unavailable, a 503 may also have no quota headers. An uncertain limiter operation is not automatically retried by the server.
+
+Creating or replacing a key in the app has a separate shared limit of five attempts per minute. It does not consume the public data quotas.

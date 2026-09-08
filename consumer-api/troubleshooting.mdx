@@ -1,0 +1,44 @@
+---
+title: "Troubleshooting"
+description: "Resolve authentication, configuration, and data-availability issues."
+icon: "wrench"
+---
+
+## My key is rejected
+
+Check that your request uses `Authorization: Bearer …` over HTTPS and that the key matches the environment. Do not use Enterprise API credentials.
+
+- `invalid_token`: the key may be missing, malformed, revoked, replaced, unknown, or for the wrong environment. These cases deliberately share one response.
+- `credential_expired`: replace it in iOS.
+- `plus_required`: restore Plus; an otherwise valid key is retained.
+- `entitlement_unavailable`: verification is temporarily unavailable, not proof that your subscription ended. Retry later.
+
+If you lost the one-time secret, replace it; creating again will not reveal an existing key.
+
+## No addresses, or an address is not found
+
+List addresses with the same key. An empty account list is valid. Use the returned `id`, not a meter ID or an address ID copied from another account.
+
+An unknown, deleted, or other user's address returns `resource_not_found`. Configure addresses in the app; this API cannot add or edit them.
+
+## The capability is false
+
+Check the relevant [capability prerequisites](/consumer-api/addresses). Having a metering-point ID alone is not enough: region, supported authorization, grid information, or export configuration may also be necessary. A live device does not bypass every meter-authorization issue.
+
+After updating the app's configuration, list addresses again. Feature availability differs by market; Plus does not enable unsupported markets.
+
+## The series is empty or shorter than requested
+
+Check normalized response bounds, actual meter-access dates, provider coverage, and the requested historical date. Capabilities indicate configured support, not complete availability.
+
+Do not fill missing intervals with zero or interpret a 200 as a complete bill or period. See the [concrete sparse-data example](/consumer-api/data-interpretation#missing-is-not-zero). Try a smaller known period and refresh later if data may still arrive.
+
+For forecasts, check regional support and the latest-confirmed cutoff. Do not add range parameters; an empty forecast is a valid response.
+
+## Requests fail intermittently
+
+For 429, honor `Retry-After`. For transient 500, 502, or 503 responses, use bounded exponential backoff, for example delays of 2, 4, 8, then 16 seconds with a small random jitter. Stop after a bounded number of retries. Each authenticated attempt can consume quota.
+
+Avoid tight polling and synchronized retries across integrations. Repeated failures should trigger investigation, not unlimited retries.
+
+Contact [engberg@minstroem.app](mailto:engberg@minstroem.app) with the endpoint, UTC time, status, error code, and `X-Request-ID`. Redact authorization headers and personal data.

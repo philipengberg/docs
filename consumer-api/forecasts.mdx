@@ -1,0 +1,30 @@
+---
+title: "Forecast prices"
+description: "Future hourly estimates after the latest confirmed price."
+icon: "chart-line"
+---
+
+[Forecast prices](/consumer-api/reference/forecast-prices) are currently supported for DK1, DK2, SE3, and SE4. Other regions advertise `forecastPrices: false` and return `422 feature_unavailable`.
+
+The endpoint accepts **no query parameters**, including `from`, `to`, and `resolution`. Output is always hourly.
+
+## Which hours are returned?
+
+The response contains all stored future hourly forecasts starting at the later of:
+
+- The start of the current hour.
+- One hour after the latest confirmed hourly price for the address's region.
+
+If there are no confirmed prices, selection starts at the current hour. Forecast gaps before the latest confirmed price are not backfilled. There is no fixed seven-day cap or guaranteed horizon.
+
+For example, if it is 10:35 UTC and the latest confirmed row starts at 14:00 UTC, forecasts begin no earlier than 15:00 UTC. A stored forecast for 13:00 is not returned, even if a confirmed 13:00 row is missing.
+
+When a newer confirmed price arrives, the next forecast response excludes hours it supersedes. Historical prices contain confirmed rows only; they never substitute forecasts.
+
+## Read the envelope
+
+Forecast responses include `addressId`, `resolution: "hour"`, `isEstimate: true`, `timeZone`, `currency`, `vatIncluded`, and `data`. They do not include top-level `from` or `to`.
+
+Each row has its own `start` and `end`, plus the same two price fields used by historical prices. Rows can have gaps; do not treat the next row as the previous row's end.
+
+A supported region with no remaining forecasts returns `200` and `data: []`, still with `isEstimate: true`. Refresh later within your [quotas](/consumer-api/errors-and-limits); never treat an empty forecast as a zero price.
