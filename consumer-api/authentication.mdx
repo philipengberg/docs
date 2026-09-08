@@ -1,0 +1,40 @@
+---
+title: "Authentication and security"
+description: "Create a key in the iOS app and keep it secret."
+icon: "key"
+---
+
+<Note>
+Every request requires an **active Min Strøm Plus subscription** and a **valid API key**.
+</Note>
+
+## Send the key
+
+Include your key in the `Authorization` header:
+
+```http
+Authorization: Bearer YOUR_API_KEY
+```
+
+For a quick test:
+
+```bash
+curl --fail-with-body --silent --show-error \
+  --header "Authorization: Bearer ${MINSTROEM_API_TOKEN}" \
+  "https://api.minstroem.app/consumer/v1/me/addresses"
+```
+
+## Manage your key
+
+- You have one key at a time, shown only when created or replaced.
+- Keys expire one year after creation or replacement.
+- Replace a lost or exposed key in iOS, then update your integrations. The old key stops working.
+- Revoke a key in iOS when you no longer need it.
+
+API access requires active Plus. If your subscription ends, the key is retained and can work again when Plus is restored, provided it is still valid.
+
+## Keep it secret
+
+Store the key in an environment variable or secret store. Keep it out of source code, URLs, screenshots, and logs, and never send it in a support message. Use HTTPS for every request.
+
+See [Errors and limits](/consumer-api/errors-and-limits) if your key is rejected.

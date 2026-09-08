@@ -1,0 +1,32 @@
+---
+title: "Addresses and capabilities"
+description: "Find your addresses and the data available for each."
+icon: "house"
+---
+
+Start with [List addresses](/consumer-api/reference/list-addresses). Use an address's returned `id` when requesting its data. If you have no addresses, the response is `{"data":[]}`.
+
+## Check what's available
+
+Each address includes `capabilities`. Check that the relevant flag is `true` before requesting a series.
+
+| Flag | Data |
+| --- | --- |
+| `consumption` | Electricity consumption |
+| `solarExport` | Electricity exported from solar |
+| `consumptionCosts` | Calculated consumption costs |
+| `solarExportRevenue` | Calculated solar-export revenue |
+| `prices` | Historical electricity prices |
+| `forecastPrices` | Hourly price forecasts |
+
+Availability varies by address. A capability can be available even when some readings are missing. If you update your address or meter connection in the app, list your addresses again.
+
+## Address details
+
+`label` and `formattedAddress` are display names. `gridOperatorName` identifies your grid operator, and `supplierName` identifies your current electricity supplier. Names and `region` may be `null` when unavailable.
+
+`timeZone` describes the calendar used for [time intervals](/consumer-api/time-and-ranges). Timestamps are returned in UTC.
+
+## Historical data
+
+Historical readings may remain available after a meter connection ends. The returned data can cover less than the period requested.

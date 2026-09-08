@@ -1,0 +1,36 @@
+---
+title: "Troubleshooting"
+description: "Help with keys, addresses, and missing data."
+icon: "wrench"
+---
+
+## My key is rejected
+
+Check your `Authorization: Bearer …` header.
+
+- `invalid_token`: check that you copied the complete, current key.
+- `credential_expired`: replace the key in iOS.
+- `plus_required`: restore an active Plus subscription.
+- `entitlement_unavailable`: subscription verification is temporarily unavailable; try again later.
+
+If you have lost your key, replace it in iOS and update your integration.
+
+## I can't find my address
+
+[List your addresses](/consumer-api/reference/list-addresses) and use an `id` from that response. Check your addresses in the app if the list is empty or an address is missing.
+
+## A capability is unavailable
+
+Check the address's [capability flags](/consumer-api/addresses) and its meter connection in the app. After making changes, list your addresses again.
+
+## Data is missing
+
+Try a period for which you can see readings in the app. A response may cover only part of the requested period, and an empty result can be valid.
+
+Keep missing readings separate from zero readings. See the [example](/consumer-api/data-interpretation#missing-is-not-zero). Forecast availability can also vary; check again later.
+
+## Requests fail intermittently
+
+For `429`, wait at least the number of seconds in `Retry-After`. For temporary `500`, `502`, or `503` errors, retry a few times with increasing delays, then stop. Repeated attempts can use up your request allowance.
+
+Contact [engberg@minstroem.app](mailto:engberg@minstroem.app) with the endpoint, UTC time, status, error code, and `X-Request-ID`. Keep your key and personal data out of the message.

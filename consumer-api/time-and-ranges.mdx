@@ -1,0 +1,66 @@
+---
+title: "Time and ranges"
+description: "UTC timestamps, calendar intervals, and bounded requests."
+icon: "clock"
+---
+
+Historical series use `from`, `to`, and either `aggregation` or `resolution`. See each endpoint's reference for its parameters.
+
+## Timestamp format
+
+Send RFC 3339 timestamps with an explicit `Z` or numeric offset. Fractional seconds are accepted:
+
+- `2026-09-05T10:00:00Z`
+- `2026-09-05T12:00:00+02:00` — the same instant
+- `2026-09-05T10:00:00.125Z`
+
+Supply each required parameter once, with `from` earlier than `to`. Use curl's `--data-urlencode` for query values, especially numeric offsets containing `+`.
+
+Response timestamps are UTC. The `timeZone` field, `Europe/Copenhagen`, describes the calendar used for interval boundaries.
+
+## Inclusive start, exclusive end
+
+An interval covers `[start, end)`. Requested ranges cover `[from, to)`.
+
+Bounds expand outward to complete requested intervals. An already aligned exclusive `to` does not expand again. For example, an hourly request from `10:15Z` to `11:10Z` on the same day becomes `10:00Z` to `12:00Z`. A request ending exactly at `11:00Z` ends there.
+
+The response's `from` and `to` show these adjusted bounds, even when some readings are missing. Each row's `start` and `end` describe its own interval.
+
+## Calendar boundaries and daylight saving
+
+Days, months, and years follow the `Europe/Copenhagen` calendar. Days around daylight-saving changes have different lengths:
+
+| Local day | UTC bounds | Duration |
+| --- | --- | --- |
+| 29 March 2026 | `2026-03-28T23:00:00Z` to `2026-03-29T22:00:00Z` | 23 hours |
+| 25 October 2026 | `2026-10-24T22:00:00Z` to `2026-10-25T23:00:00Z` | 25 hours |
+
+In autumn, `2026-10-25T00:00:00Z` and `2026-10-25T01:00:00Z` are distinct hours even though both display as 02:00 locally with different offsets. Key readings by absolute timestamps, not a local hour label. Do not assume every day contains 24 hourly readings.
+
+## Intervals and limits
+
+Caps apply **after normalization**, using local calendar days or years.
+
+| Resource | Values | Maximum normalized range |
+| --- | --- | --- |
+| Consumption / solar export | `hour` | 366 days |
+| Consumption / solar export | `day`, `month`, `year` | Five years |
+| Consumption costs / solar revenue | `hour`, `day`, `month`, `year` | 366 days |
+| Historical prices | `hour` | 366 days |
+| Historical prices | `fifteenMinutes` | 90 days |
+
+Usage, costs, and revenue use the query name `aggregation`. Historical prices use `resolution`; spelling and case matter.
+
+Expansion can push a short-looking request over its cap. A yearly cost request crossing New Year expands to two whole years and is rejected, even if its original bounds were only days apart. Request each year separately.
+
+The available forecast period is described in [Forecasts](/consumer-api/forecasts).
+
+## Fetch adjacent windows
+
+Split large historical requests into aligned windows:
+
+1. Request `[A, B)`.
+2. Request `[B, C)` at the same interval.
+3. Combine rows by absolute `start` timestamp.
+
+Choose calendar-aligned boundaries before splitting. Splitting at 10:30 and relying on normalization can cause both responses to include the same 10:00 hourly bucket. Retrying or refreshing a window can also return revised data; replace the matching interval rather than adding it again.

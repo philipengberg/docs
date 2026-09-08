@@ -1,38 +1,32 @@
 ---
-title: Introduction
-description: 'Welcome to the Min Strøm API docs'
-icon: 'house'
-'og-title': 'Min Strøm API'
+title: "Consumer API"
+description: "Your energy data. Your own integrations."
+icon: "house"
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.svg"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.svg"
-  alt="Hero Dark"
-/>
+<img className="block dark:hidden" src="/images/hero-light.svg" alt="Min Strøm" />
+<img className="hidden dark:block" src="/images/hero-dark.svg" alt="Min Strøm" />
 
-## Overview
+## Your data, on your terms
 
-Get set up quickly with the Min Strøm API guide.
+The Min Strøm Consumer API gives **Min Strøm Plus** subscribers read-only access to their own addresses, electricity consumption, solar export, calculated costs, and prices.
+
+Create an API key in the iOS app, then use it in your own integration. Your key identifies your account.
 
 <CardGroup cols={2}>
-  <Card
-    title="Authentication"
-    icon="lock"
-    href="/api-reference/authentication"
-  >
-    Get set up with authentication for API endpoints
+  <Card title="Make your first request" icon="terminal" href="/consumer-api/quickstart">
+    Create a key, find your address(es), and fetch consumption using curl.
   </Card>
-  <Card
-    title="Endpoints"
-    icon="server"
-    href="/api-reference/endpoints"
-  >
-    Get an overview of the available endpoints
+  <Card title="Building a business integration?" icon="building" href="/enterprise-api/overview">
+    The Enterprise API (B2B) has a separate access process and authentication.
   </Card>
 </CardGroup>
+
+## What you can read
+
+- Address summaries and the capabilities available for each address.
+- Electricity consumption and solar-export series.
+- Calculated consumption costs and solar-export revenue.
+- Confirmed historical prices and available hourly forecast prices.
+
+Available data varies by address. A successful response may contain fewer readings than the requested period: missing data is not zero.

@@ -1,0 +1,129 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Min Strøm API",
+  "colors": {
+    "primary": "#0A84FF",
+    "light": "#007AFF",
+    "dark": "#0A84FF"
+  },
+  "background": {
+    "color": {
+      "light": "#FFFFFF",
+      "dark": "#05070F"
+    }
+  },
+  "logo": {
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg"
+  },
+  "favicon": "/images/favicon.png",
+  "appearance": {
+    "default": "system",
+    "strict": false
+  },
+  "contextual": {
+    "options": ["copy", "download-spec"]
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Home",
+        "href": "https://minstroem.app"
+      },
+      {
+        "label": "Status",
+        "href": "https://status.minstroem.app"
+      },
+      {
+        "label": "Support",
+        "href": "mailto:engberg@minstroem.app"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Get started",
+      "href": "/consumer-api/quickstart"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Consumer API",
+        "groups": [
+          {
+            "group": "Get started",
+            "pages": [
+              "introduction",
+              "consumer-api/quickstart"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "consumer-api/authentication",
+              "consumer-api/addresses",
+              "consumer-api/time-and-ranges",
+              "consumer-api/data-interpretation",
+              "consumer-api/forecasts",
+              "consumer-api/errors-and-limits",
+              "consumer-api/troubleshooting"
+            ]
+          },
+          {
+            "group": "API reference",
+            "pages": [
+              "consumer-api/reference/list-addresses",
+              "consumer-api/reference/consumption",
+              "consumer-api/reference/solar-export",
+              "consumer-api/reference/consumption-costs",
+              "consumer-api/reference/solar-export-revenue",
+              "consumer-api/reference/prices",
+              "consumer-api/reference/forecast-prices"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Enterprise API (B2B)",
+        "groups": [
+          {
+            "group": "Enterprise integrations",
+            "pages": [
+              "enterprise-api/overview",
+              "api-reference/authentication",
+              "api-reference/endpoints",
+              "api-reference/shared"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "api": {
+    "openapi": "api-reference/openapi.json",
+    "playground": {
+      "display": "none"
+    },
+    "examples": {
+      "languages": [
+        "curl"
+      ],
+      "autogenerate": false
+    },
+    "mdx": {
+      "server": "https://api.minstroem.app",
+      "auth": {
+        "method": "bearer"
+      }
+    }
+  },
+  "footer": {
+    "socials": {
+      "linkedin": "https://www.linkedin.com/company/86938713"
+    }
+  },
+  "feedback": {
+    "thumbsRating": true
+  }
+}

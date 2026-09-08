@@ -1,0 +1,13 @@
+---
+title: "Forecast prices"
+description: "Upcoming hourly electricity-price estimates."
+icon: "chart-line"
+---
+
+[Get forecast prices](/consumer-api/reference/forecast-prices) returns the available hourly estimates for DK1, DK2, SE3, and SE4. Check your address's `forecastPrices` capability before requesting them.
+
+Forecasts cover upcoming hours after the latest confirmed price, starting no earlier than the current hour. The available horizon varies. As confirmed prices arrive, the forecast period moves forward.
+
+The response has `isEstimate: true`. Each price has a `start` and `end` timestamp. If no forecasts are available, `data` is empty.
+
+See the [endpoint reference](/consumer-api/reference/forecast-prices) for the request and example response.

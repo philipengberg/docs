@@ -1,0 +1,73 @@
+---
+title: "Data interpretation"
+description: "Understand missing readings, estimates, and calculated amounts."
+icon: "book-open"
+---
+
+## Missing is not zero
+
+Readings are returned in time order. Some intervals may be missing, or the result may be empty. A missing reading means the value is unknown, not zero.
+
+For a request covering 10:00–13:00 UTC, this synthetic hourly response contains **no information** about 11:00–12:00:
+
+```json
+{
+  "addressId": "2b4bf7a8-b5d0-45ab-8d42-3a5688bba167",
+  "from": "2026-09-05T10:00:00Z",
+  "to": "2026-09-05T13:00:00Z",
+  "aggregation": "hour",
+  "timeZone": "Europe/Copenhagen",
+  "data": [
+    {
+      "start": "2026-09-05T10:00:00Z",
+      "end": "2026-09-05T11:00:00Z",
+      "energyKWh": 1.2,
+      "isEstimate": false
+    },
+    {
+      "start": "2026-09-05T12:00:00Z",
+      "end": "2026-09-05T13:00:00Z",
+      "energyKWh": 0,
+      "isEstimate": false
+    }
+  ]
+}
+```
+
+The returned energy sums to 1.2 kWh, but that is not a verified total for the three-hour period. The second row reports a known zero; the missing middle row does not.
+
+A `200` response means the request succeeded, **not that the period is complete**. Keep missing intervals unknown in charts and reports, including when working with daily or larger totals.
+
+## Estimates and nulls
+
+`isEstimate: true` marks estimated data. Forecast responses always carry this flag.
+
+`null` means a value is unavailable. For example:
+
+- Unknown variable price charges are null, not zero.
+- Cost/revenue effective rates are null when energy is zero, even when fixed fees or monetary amounts exist.
+- Missing grid or supplier names are null.
+
+Do not silently substitute zero for a null component.
+
+## Energy, currency, and VAT
+
+`energyKWh` is measured in kWh. Monetary responses state `currency` and `vatIncluded`.
+
+Prices and consumption costs include VAT. Solar-export revenue excludes VAT. Rates are currency per kWh; fixed fees and totals are amounts in the stated currency: DKK, SEK, or NOK.
+
+Prices reflect the available price components for your address and may differ from the amount on your bill.
+
+## Calculated costs and revenue
+
+Consumption `totalCost` includes fixed fees; solar `netRevenue` is the amount after fixed fees. The effective `totalPricePerKWh` excludes fixed fees and is `null` at zero energy. Rates and amounts can be negative.
+
+For example, 2 kWh, a total cost of 4.60 DKK, and fixed fees of 0.10 DKK give an effective rate of 2.25 DKK/kWh. See the [cost](/consumer-api/reference/consumption-costs) and [revenue](/consumer-api/reference/solar-export-revenue) references for field definitions.
+
+## Price precision and billing
+
+Historical and forecast `totalPricePerKWh` and `variableChargesPerKWh` are rounded to three decimal places. Trailing zeros may be omitted: 1.2 and 1.200 represent the same value.
+
+For example, a rate of 1.2344 appears as 1.234. Multiplying the rounded price by 100 kWh gives 123.40 rather than 123.44. Use the cost or revenue endpoint for calculated amounts.
+
+Reported totals cover the available data and may differ from your complete bill.

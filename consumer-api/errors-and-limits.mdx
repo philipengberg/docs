@@ -1,0 +1,67 @@
+---
+title: "Errors and limits"
+description: "Stable error codes, request IDs, and shared request budgets."
+icon: "triangle-exclamation"
+---
+
+## Error responses
+
+Errors include a readable explanation and a code:
+
+```json
+{
+  "error": true,
+  "reason": "An active Min Strøm Plus subscription is required.",
+  "errorCode": "plus_required"
+}
+```
+
+Use the HTTP status and `errorCode` to handle errors in your integration. `reason` explains the problem in plain language.
+
+| Status | Code | Action |
+| --- | --- | --- |
+| 400 | `invalid_parameter` | Check the endpoint's parameters, timestamps, and interval values. |
+| 400 | `invalid_range` | Make the start earlier than the end. |
+| 400 | `range_too_large` | Split the range using aligned boundaries; limits apply after expansion. |
+| 401 | `invalid_token` | Check your bearer header and key; replace a lost key in iOS. |
+| 401 | `credential_expired` | Replace the expired key in iOS. |
+| 403 | `plus_required` | Restore an active Plus subscription. |
+| 403 | `forbidden` | Access is denied. Check the resource you requested. |
+| 404 | `resource_not_found` | Re-list your addresses and use a returned ID. |
+| 422 | `feature_unavailable` | Check the address's capability flags. |
+| 429 | `rate_limited` | Wait at least `Retry-After` seconds. |
+| 500 | `internal_error` | Retry with backoff; contact support if persistent. |
+| 502 | `upstream_unavailable` | Data is temporarily unavailable; retry later. |
+| 503 | `entitlement_unavailable` | Plus verification is unavailable; retry later. |
+| 503 | `rate_limiter_unavailable` | Request limiting is unavailable; retry later. |
+
+## Request and cache headers
+
+Responses include `X-Request-ID` for troubleshooting and `Cache-Control: private, no-store`. You may supply a UUID in the `X-Request-ID` request header.
+
+Include the response request ID and endpoint when contacting [support](mailto:engberg@minstroem.app). Never include your key or authorization header.
+
+## Request limits
+
+The standard limits are **60 requests per minute** and **2,000 per day**, shared by your integrations. Check the response headers for your current allowance.
+
+Limits reset at the start of each UTC minute and at midnight UTC. Replacing your key keeps the same allowance.
+
+Requests with a valid key and active Plus count toward both limits, including requests that return errors or `429`. Requests rejected for authentication or Plus access do not count. Wait before retrying to avoid using up your allowance.
+
+## Read the quota headers
+
+Quota headers describe your remaining allowance:
+
+| Header | Meaning |
+| --- | --- |
+| `X-RateLimit-Limit-Minute` / `X-RateLimit-Limit-Day` | Request limits |
+| `X-RateLimit-Remaining-Minute` / `X-RateLimit-Remaining-Day` | Remaining attempts, never negative |
+| `X-RateLimit-Reset-Minute` / `X-RateLimit-Reset-Day` | Reset instants as Unix seconds |
+| `Retry-After` | Seconds to wait on a 429 |
+
+For example, `Retry-After: 42` means wait at least 42 seconds before another attempt. If both limits are reached, wait for the later reset.
+
+Quota headers may be absent on authentication errors or temporary service failures.
+
+Creating or replacing a key in the app has a separate limit of five attempts per minute.
