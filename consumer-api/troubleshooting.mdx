@@ -1,44 +1,36 @@
 ---
 title: "Troubleshooting"
-description: "Resolve authentication, configuration, and data-availability issues."
+description: "Help with keys, addresses, and missing data."
 icon: "wrench"
 ---
 
 ## My key is rejected
 
-Check that your request uses `Authorization: Bearer …` over HTTPS and that the key matches the environment. Do not use Enterprise API credentials.
+Check your `Authorization: Bearer …` header.
 
-- `invalid_token`: the key may be missing, malformed, revoked, replaced, unknown, or for the wrong environment. These cases deliberately share one response.
-- `credential_expired`: replace it in iOS.
-- `plus_required`: restore Plus; an otherwise valid key is retained.
-- `entitlement_unavailable`: verification is temporarily unavailable, not proof that your subscription ended. Retry later.
+- `invalid_token`: check that you copied the complete, current key.
+- `credential_expired`: replace the key in iOS.
+- `plus_required`: restore an active Plus subscription.
+- `entitlement_unavailable`: subscription verification is temporarily unavailable; try again later.
 
-If you lost the one-time secret, replace it; creating again will not reveal an existing key.
+If you have lost your key, replace it in iOS and update your integration.
 
-## No addresses, or an address is not found
+## I can't find my address
 
-List addresses with the same key. An empty account list is valid. Use the returned `id`, not a meter ID or an address ID copied from another account.
+[List your addresses](/consumer-api/reference/list-addresses) and use an `id` from that response. Check your addresses in the app if the list is empty or an address is missing.
 
-An unknown, deleted, or other user's address returns `resource_not_found`. Configure addresses in the app; this API cannot add or edit them.
+## A capability is unavailable
 
-## The capability is false
+Check the address's [capability flags](/consumer-api/addresses) and its meter connection in the app. After making changes, list your addresses again.
 
-Check the relevant [capability prerequisites](/consumer-api/addresses). Having a metering-point ID alone is not enough: region, supported authorization, grid information, or export configuration may also be necessary. A live device does not bypass every meter-authorization issue.
+## Data is missing
 
-After updating the app's configuration, list addresses again. Feature availability differs by market; Plus does not enable unsupported markets.
+Try a period for which you can see readings in the app. A response may cover only part of the requested period, and an empty result can be valid.
 
-## The series is empty or shorter than requested
-
-Check normalized response bounds, actual meter-access dates, provider coverage, and the requested historical date. Capabilities indicate configured support, not complete availability.
-
-Do not fill missing intervals with zero or interpret a 200 as a complete bill or period. See the [concrete sparse-data example](/consumer-api/data-interpretation#missing-is-not-zero). Try a smaller known period and refresh later if data may still arrive.
-
-For forecasts, check regional support and the latest-confirmed cutoff. Do not add range parameters; an empty forecast is a valid response.
+Keep missing readings separate from zero readings. See the [example](/consumer-api/data-interpretation#missing-is-not-zero). Forecast availability can also vary; check again later.
 
 ## Requests fail intermittently
 
-For 429, honor `Retry-After`. For transient 500, 502, or 503 responses, use bounded exponential backoff, for example delays of 2, 4, 8, then 16 seconds with a small random jitter. Stop after a bounded number of retries. Each authenticated attempt can consume quota.
+For `429`, wait at least the number of seconds in `Retry-After`. For temporary `500`, `502`, or `503` errors, retry a few times with increasing delays, then stop. Repeated attempts can use up your request allowance.
 
-Avoid tight polling and synchronized retries across integrations. Repeated failures should trigger investigation, not unlimited retries.
-
-Contact [engberg@minstroem.app](mailto:engberg@minstroem.app) with the endpoint, UTC time, status, error code, and `X-Request-ID`. Redact authorization headers and personal data.
+Contact [engberg@minstroem.app](mailto:engberg@minstroem.app) with the endpoint, UTC time, status, error code, and `X-Request-ID`. Keep your key and personal data out of the message.

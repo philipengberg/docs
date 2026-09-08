@@ -1,14 +1,22 @@
 ---
 title: "Authentication and security"
-description: "Create one key in iOS and keep it private."
+description: "Create a key in the iOS app and keep it secret."
 icon: "key"
 ---
 
-Every Consumer API request needs an active Min Strøm Plus subscription and a valid API key belonging to that user. Access is read-only and limited to that user's addresses.
+<Note>
+Every request requires an **active Min Strøm Plus subscription** and a **valid API key**.
+</Note>
 
 ## Send the key
 
-Use HTTPS and the standard bearer header:
+Include your key in the `Authorization` header:
+
+```http
+Authorization: Bearer YOUR_API_KEY
+```
+
+For a quick test:
 
 ```bash
 curl --fail-with-body --silent --show-error \
@@ -16,23 +24,17 @@ curl --fail-with-body --silent --show-error \
   "https://api.minstroem.app/consumer/v1/me/addresses"
 ```
 
-Create the key through the iOS app as described in [Quick start](/consumer-api/quickstart). You do not need a user ID, API secret, HMAC calculation, or another login request. Enterprise credentials are separate and cannot be used here.
+## Manage your key
 
-## One key, shown once
+- You have one key at a time, shown only when created or replaced.
+- Keys expire one year after creation or replacement.
+- Replace a lost or exposed key in iOS, then update your integrations. The old key stops working.
+- Revoke a key in iOS when you no longer need it.
 
-- You can have one credential at a time. Creating again while it is active does not reveal its secret again.
-- The full key is shown only when created or replaced. Store it then; there is no secret-recovery operation.
-- A key expires one calendar year after creation or replacement. Plus expiry is checked separately.
-- Replacing the key immediately invalidates the previous one for new requests. Update every integration that used it. Requests already authenticated may finish.
-- Revoking a key blocks subsequent requests. You can still inspect or revoke it in the app without Plus.
-- Losing Plus blocks API access without deleting the key. If Plus returns while the key is still valid, the same key can work again. Cancelling renewal alone does not remove access before entitlement expiry.
+API access requires active Plus. If your subscription ends, the key is retained and can work again when Plus is restored, provided it is still valid.
 
-A lost creation response or forgotten secret requires replacement. Multiple integrations can share your one key, but they also share its quotas and replacement lifecycle.
+## Keep it secret
 
-## Store secrets outside your integration code
+Store the key in an environment variable or secret store. Keep it out of source code, URLs, screenshots, and logs, and never send it in a support message. Use HTTPS for every request.
 
-Configure the key through an environment variable or your deployment's secret store. Never commit it to source control, put it in a URL, include it in public browser code, or send it in support requests. Avoid verbose HTTP logs that record authorization headers.
-
-Production keys begin with `msp_live_`; non-production keys begin with `msp_test_`. The key is otherwise opaque: do not parse it to infer user information, expiry, or permissions. Keys are environment-specific. Configure both the base URL and its matching secret in the environment where your integration runs.
-
-If a key leaks, replace it in iOS and update your integrations. See [Errors and limits](/consumer-api/errors-and-limits) for expired keys and temporarily unavailable Plus verification.
+See [Errors and limits](/consumer-api/errors-and-limits) if your key is rejected.

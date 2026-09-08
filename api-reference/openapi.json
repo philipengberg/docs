@@ -4,7 +4,7 @@
     "title": "Min Strøm Consumer API",
     "version": "1.0.0",
     "summary": "Read-only access to your own energy data with Min Strøm Plus.",
-    "description": "Use a bearer key created in iOS. Seven read-only operations; excludes app credential management and Enterprise endpoints. Examples are synthetic. Interval calendars use Europe/Copenhagen while timestamps are UTC. See the guides for sparse data, normalized ranges, quotas, and security.",
+    "description": "Read your energy data with an API key created in the iOS app. An active Min Strøm Plus subscription is required. See the guides for time ranges, data interpretation, and request limits.",
     "contact": {
       "name": "Min Strøm",
       "email": "engberg@minstroem.app"
@@ -13,7 +13,7 @@
   "servers": [
     {
       "url": "https://api.minstroem.app/consumer/v1",
-      "description": "Production"
+      "description": "Consumer API"
     }
   ],
   "security": [
@@ -24,7 +24,7 @@
   "tags": [
     {
       "name": "Addresses",
-      "description": "Owned addresses and configured support."
+      "description": "Your addresses and available data."
     },
     {
       "name": "Energy",
@@ -40,13 +40,13 @@
       "get": {
         "operationId": "listAddresses",
         "summary": "List addresses",
-        "description": "Discover your addresses and configured capabilities. Names and region may be null. No provider-health check; an account without addresses returns an empty data array.",
+        "description": "List your addresses and the data available for each.",
         "tags": [
           "Addresses"
         ],
         "responses": {
           "200": {
-            "description": "Successful response. Sparse/empty data is valid; 200 does not guarantee a complete period.",
+            "description": "Your addresses. The list is empty when no addresses are available.",
             "headers": {
               "X-Request-ID": {
                 "$ref": "#/components/headers/RequestId"
@@ -142,13 +142,13 @@
       "get": {
         "operationId": "consumption",
         "summary": "Get consumption",
-        "description": "Read consumption using the app's existing source selection and best-effort loading. Hourly requests have a 366-local-day cap; day/month/year requests have a five-local-year cap, after normalization.",
+        "description": "Get electricity consumption. Hourly requests cover up to 366 days; daily, monthly, or yearly requests cover up to five years. Limits apply after range normalization.",
         "tags": [
           "Energy"
         ],
         "responses": {
           "200": {
-            "description": "Successful response. Sparse/empty data is valid; 200 does not guarantee a complete period.",
+            "description": "Available readings in time order. Results may contain gaps or be empty.",
             "headers": {
               "X-Request-ID": {
                 "$ref": "#/components/headers/RequestId"
@@ -269,13 +269,13 @@
       "get": {
         "operationId": "solarExport",
         "summary": "Get solar export",
-        "description": "Read exported energy for a configured solar-export meter. Hourly requests have a 366-local-day cap; day/month/year requests have a five-local-year cap, after normalization.",
+        "description": "Get electricity exported from solar. Hourly requests cover up to 366 days; daily, monthly, or yearly requests cover up to five years. Limits apply after range normalization.",
         "tags": [
           "Energy"
         ],
         "responses": {
           "200": {
-            "description": "Successful response. Sparse/empty data is valid; 200 does not guarantee a complete period.",
+            "description": "Available readings in time order. Results may contain gaps or be empty.",
             "headers": {
               "X-Request-ID": {
                 "$ref": "#/components/headers/RequestId"
@@ -396,13 +396,13 @@
       "get": {
         "operationId": "consumptionCosts",
         "summary": "Get consumption costs",
-        "description": "Danish calculated costs, including VAT and allocated fixed fees. Uses native app aggregates; the cap is 366 local days after normalization at every aggregation. Results need not reconstruct a complete bill.",
+        "description": "Get calculated electricity costs, including VAT and fixed fees. Available for Danish addresses. Request up to 366 days after range normalization.",
         "tags": [
           "Energy"
         ],
         "responses": {
           "200": {
-            "description": "Successful response. Sparse/empty data is valid; 200 does not guarantee a complete period.",
+            "description": "Available readings in time order. Results may contain gaps or be empty.",
             "headers": {
               "X-Request-ID": {
                 "$ref": "#/components/headers/RequestId"
@@ -530,13 +530,13 @@
       "get": {
         "operationId": "solarExportRevenue",
         "summary": "Get solar-export revenue",
-        "description": "Danish calculated net revenue, excluding VAT and after fixed fees. Uses native app aggregates; the cap is 366 local days after normalization at every aggregation.",
+        "description": "Get calculated solar-export revenue after fixed fees, excluding VAT. Available for Danish addresses. Request up to 366 days after range normalization.",
         "tags": [
           "Energy"
         ],
         "responses": {
           "200": {
-            "description": "Successful response. Sparse/empty data is valid; 200 does not guarantee a complete period.",
+            "description": "Available readings in time order. Results may contain gaps or be empty.",
             "headers": {
               "X-Request-ID": {
                 "$ref": "#/components/headers/RequestId"
@@ -664,13 +664,13 @@
       "get": {
         "operationId": "prices",
         "summary": "Get historical prices",
-        "description": "Confirmed prices only; never substitutes forecasts. Known components are returned even when other billing inputs are missing. No fixed fees. Hour: 366 local days; fifteenMinutes: 90 local days, after normalization.",
+        "description": "Get confirmed electricity prices by hour or quarter-hour. Request up to 366 days at hourly resolution or 90 days at quarter-hour resolution, after range normalization.",
         "tags": [
           "Prices"
         ],
         "responses": {
           "200": {
-            "description": "Successful response. Sparse/empty data is valid; 200 does not guarantee a complete period.",
+            "description": "Available readings in time order. Results may contain gaps or be empty.",
             "headers": {
               "X-Request-ID": {
                 "$ref": "#/components/headers/RequestId"
@@ -795,13 +795,13 @@
       "get": {
         "operationId": "forecastPrices",
         "summary": "Get forecast prices",
-        "description": "All stored future hourly forecasts from max(current hour, latest confirmed hour + one hour). No confirmed rows means start at the current hour. No earlier-gap backfilling and no fixed seven-day horizon. DK1, DK2, SE3, SE4 only. Rejects all query parameters; supported regions with no remaining forecasts return empty data.",
+        "description": "Get upcoming hourly price estimates for DK1, DK2, SE3, and SE4. Forecasts follow the latest confirmed price, starting no earlier than the current hour. The available forecast period varies.",
         "tags": [
           "Prices"
         ],
         "responses": {
           "200": {
-            "description": "Successful response. Sparse/empty data is valid; 200 does not guarantee a complete period.",
+            "description": "Available readings in time order. Results may contain gaps or be empty.",
             "headers": {
               "X-Request-ID": {
                 "$ref": "#/components/headers/RequestId"
@@ -917,7 +917,7 @@
       "ConsumerBearer": {
         "type": "http",
         "scheme": "bearer",
-        "description": "Opaque Consumer API key created in iOS. Plus required. Store securely; not an Enterprise credential."
+        "description": "API key created in the iOS app. Requires an active Min Strøm Plus subscription."
       }
     },
     "schemas": {
@@ -931,7 +931,7 @@
       },
       "TimeZone": {
         "type": "string",
-        "description": "Interval calendar, currently Europe/Copenhagen for all regions. Timestamps remain UTC.",
+        "description": "Calendar used for interval boundaries: Europe/Copenhagen. Timestamps are UTC.",
         "examples": [
           "Europe/Copenhagen"
         ]
@@ -943,7 +943,7 @@
           "SEK",
           "NOK"
         ],
-        "description": "Currency of amounts and per-kWh rates; no conversion."
+        "description": "Currency for monetary amounts and per-kWh rates."
       },
       "Aggregation": {
         "type": "string",
@@ -975,27 +975,27 @@
         "properties": {
           "consumption": {
             "type": "boolean",
-            "description": "Configured support for consumption; not a provider-health or completeness guarantee."
+            "description": "Electricity consumption is available."
           },
           "solarExport": {
             "type": "boolean",
-            "description": "Configured support for solarExport; not a provider-health or completeness guarantee."
+            "description": "Solar-export readings are available."
           },
           "consumptionCosts": {
             "type": "boolean",
-            "description": "Configured support for consumptionCosts; not a provider-health or completeness guarantee."
+            "description": "Calculated consumption costs are available."
           },
           "solarExportRevenue": {
             "type": "boolean",
-            "description": "Configured support for solarExportRevenue; not a provider-health or completeness guarantee."
+            "description": "Calculated solar-export revenue is available."
           },
           "prices": {
             "type": "boolean",
-            "description": "Configured support for prices; not a provider-health or completeness guarantee."
+            "description": "Historical electricity prices are available."
           },
           "forecastPrices": {
             "type": "boolean",
-            "description": "Configured support for forecastPrices; not a provider-health or completeness guarantee."
+            "description": "Hourly price forecasts are available."
           }
         }
       },
@@ -1016,7 +1016,7 @@
           "id": {
             "type": "string",
             "format": "uuid",
-            "description": "Owned address ID for series paths; not a meter or external registry ID."
+            "description": "Address ID to use in series requests."
           },
           "label": {
             "type": "string",
@@ -1045,7 +1045,7 @@
               "NO5",
               null
             ],
-            "description": "Configured price region, or null."
+            "description": "Electricity-price region, or null when unavailable."
           },
           "timeZone": {
             "$ref": "#/components/schemas/TimeZone"
@@ -1055,14 +1055,14 @@
               "string",
               "null"
             ],
-            "description": "Display name from persisted grid information; no live lookup."
+            "description": "Grid operator name, or null when unavailable."
           },
           "supplierName": {
             "type": [
               "string",
               "null"
             ],
-            "description": "Supplier on the currently active matching agreement, or null."
+            "description": "Current electricity supplier name, or null when unavailable."
           },
           "capabilities": {
             "$ref": "#/components/schemas/Capabilities"
@@ -1092,7 +1092,7 @@
           },
           "isEstimate": {
             "type": "boolean",
-            "description": "Estimated data flag; false does not certify completeness."
+            "description": "True when the reading is estimated."
           }
         }
       },
@@ -1126,7 +1126,7 @@
               "null"
             ],
             "format": "double",
-            "description": "(totalCost - fixedFeesForInterval) / energyKWh, in currency/kWh. Null at zero energy. Not rounded to three decimals."
+            "description": "Effective rate in currency/kWh: (totalCost - fixedFeesForInterval) / energyKWh. Null at zero energy."
           },
           "fixedFeesForInterval": {
             "type": "number",
@@ -1136,7 +1136,7 @@
           "totalCost": {
             "type": "number",
             "format": "double",
-            "description": "Calculated cost including fixed fees and VAT; not a complete-bill guarantee."
+            "description": "Calculated consumption cost including fixed fees and VAT."
           },
           "isEstimate": {
             "type": "boolean"
@@ -1173,7 +1173,7 @@
               "null"
             ],
             "format": "double",
-            "description": "(netRevenue + fixedFeesForInterval) / energyKWh, in currency/kWh. Null at zero energy. Not rounded to three decimals."
+            "description": "Effective rate in currency/kWh: (netRevenue + fixedFeesForInterval) / energyKWh. Null at zero energy."
           },
           "fixedFeesForInterval": {
             "type": "number",
@@ -1209,7 +1209,7 @@
           "totalPricePerKWh": {
             "type": "number",
             "format": "double",
-            "description": "Known composed price including VAT, in currency/kWh, rounded to three decimals without guaranteed trailing zeros. Excludes fixed fees; unknown billing components may be missing."
+            "description": "Price in currency/kWh including VAT, rounded to three decimals. Based on available price components. Fixed fees are reported by the cost and revenue endpoints."
           },
           "variableChargesPerKWh": {
             "type": [
@@ -1217,7 +1217,7 @@
               "null"
             ],
             "format": "double",
-            "description": "Known variable charge component including VAT, in currency/kWh, rounded to three decimals. Null when unavailable. Non-Danish addresses do not load Danish charges."
+            "description": "Variable charges in currency/kWh including VAT, rounded to three decimals. Null when unavailable."
           }
         }
       },
@@ -1240,7 +1240,7 @@
           },
           "errorCode": {
             "type": "string",
-            "description": "Stable code guaranteed inside Consumer routes. Unmatched URLs use general backend handling."
+            "description": "Stable machine-readable error code."
           }
         }
       },
@@ -1484,7 +1484,7 @@
         "name": "addressId",
         "in": "path",
         "required": true,
-        "description": "Owned address ID returned by List addresses.",
+        "description": "Address ID returned by List addresses.",
         "schema": {
           "type": "string",
           "format": "uuid"
@@ -1515,7 +1515,7 @@
         "name": "aggregation",
         "in": "query",
         "required": true,
-        "description": "Native usage/cost/revenue aggregation.",
+        "description": "Time interval for grouping readings.",
         "schema": {
           "$ref": "#/components/schemas/Aggregation"
         },
@@ -1601,7 +1601,7 @@
     },
     "responses": {
       "BadRequest": {
-        "description": "Invalid parameters, invalid_range, or range_too_large. Capability checks precede range validation.",
+        "description": "Check the parameters and requested range: invalid_parameter, invalid_range, or range_too_large.",
         "headers": {
           "X-Request-ID": {
             "$ref": "#/components/headers/RequestId"
@@ -1642,7 +1642,7 @@
         }
       },
       "Unauthorized": {
-        "description": "Missing, malformed, unknown, revoked or mismatched key; credential_expired only after verifying an expired key.",
+        "description": "The API key is invalid (invalid_token) or expired (credential_expired).",
         "headers": {
           "X-Request-ID": {
             "$ref": "#/components/headers/RequestId"
@@ -1683,7 +1683,7 @@
         }
       },
       "Forbidden": {
-        "description": "Inactive Plus (plus_required), or a distinct access denial (forbidden).",
+        "description": "An active Plus subscription is required (plus_required), or access is denied (forbidden).",
         "headers": {
           "X-Request-ID": {
             "$ref": "#/components/headers/RequestId"
@@ -1724,7 +1724,7 @@
         }
       },
       "NotFound": {
-        "description": "Unknown, deleted, invalid, or other-user address ID; indistinguishable.",
+        "description": "The address could not be found. Use an ID returned by List addresses.",
         "headers": {
           "X-Request-ID": {
             "$ref": "#/components/headers/RequestId"
@@ -1765,7 +1765,7 @@
         }
       },
       "UnavailableFeature": {
-        "description": "Requested capability is not configured or supported.",
+        "description": "This data is unavailable for the address. Check its capability flags.",
         "headers": {
           "X-Request-ID": {
             "$ref": "#/components/headers/RequestId"
@@ -1850,7 +1850,7 @@
         }
       },
       "InternalError": {
-        "description": "Sanitized unexpected error, including unclassifiable legacy errors.",
+        "description": "An unexpected error occurred. Retry later or contact support.",
         "headers": {
           "X-Request-ID": {
             "$ref": "#/components/headers/RequestId"
@@ -1891,7 +1891,7 @@
         }
       },
       "UpstreamUnavailable": {
-        "description": "Identifiable provider failure. Some best-effort failures yield sparse/empty 200 responses instead.",
+        "description": "Data is temporarily unavailable. Retry later.",
         "headers": {
           "X-Request-ID": {
             "$ref": "#/components/headers/RequestId"
@@ -1932,7 +1932,7 @@
         }
       },
       "ServiceUnavailable": {
-        "description": "entitlement_unavailable or rate_limiter_unavailable. Retry later, not necessarily entitlement loss.",
+        "description": "Subscription verification or request limiting is temporarily unavailable. Retry later.",
         "headers": {
           "X-Request-ID": {
             "$ref": "#/components/headers/RequestId"

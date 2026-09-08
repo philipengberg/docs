@@ -4,7 +4,7 @@ description: "UTC timestamps, calendar intervals, and bounded requests."
 icon: "clock"
 ---
 
-Historical series require `from`, `to`, and either `aggregation` or `resolution`. Forecasts accept no query parameters.
+Historical series use `from`, `to`, and either `aggregation` or `resolution`. See each endpoint's reference for its parameters.
 
 ## Timestamp format
 
@@ -14,9 +14,9 @@ Send RFC 3339 timestamps with an explicit `Z` or numeric offset. Fractional seco
 - `2026-09-05T12:00:00+02:00` — the same instant
 - `2026-09-05T10:00:00.125Z`
 
-Date-only values, zone-less timestamps, impossible dates, missing or duplicate required parameters, and unsupported interval values are rejected. `from` must be earlier than `to`. Use curl's `--data-urlencode` for query values, especially numeric offsets containing `+`.
+Supply each required parameter once, with `from` earlier than `to`. Use curl's `--data-urlencode` for query values, especially numeric offsets containing `+`.
 
-All response timestamps are UTC. The retained `timeZone` field is currently `Europe/Copenhagen`: it describes calendar boundaries, not the timestamp encoding or an address-specific calendar.
+Response timestamps are UTC. The `timeZone` field, `Europe/Copenhagen`, describes the calendar used for interval boundaries.
 
 ## Inclusive start, exclusive end
 
@@ -24,11 +24,11 @@ An interval covers `[start, end)`. Requested ranges cover `[from, to)`.
 
 Bounds expand outward to complete requested intervals. An already aligned exclusive `to` does not expand again. For example, an hourly request from `10:15Z` to `11:10Z` on the same day becomes `10:00Z` to `12:00Z`. A request ending exactly at `11:00Z` ends there.
 
-The returned envelope always describes the normalized requested bounds, even if the response contains no rows or meter-access bounds permit only part of that period. Each row's end follows its interval—not the next available reading.
+The response's `from` and `to` show these adjusted bounds, even when some readings are missing. Each row's `start` and `end` describe its own interval.
 
 ## Calendar boundaries and daylight saving
 
-Days, months, and years follow the server's Copenhagen calendar, not fixed multiples of 24 hours. For example:
+Days, months, and years follow the `Europe/Copenhagen` calendar. Days around daylight-saving changes have different lengths:
 
 | Local day | UTC bounds | Duration |
 | --- | --- | --- |
@@ -53,11 +53,11 @@ Usage, costs, and revenue use the query name `aggregation`. Historical prices us
 
 Expansion can push a short-looking request over its cap. A yearly cost request crossing New Year expands to two whole years and is rejected, even if its original bounds were only days apart. Request each year separately.
 
-Forecasts have no caller-selected range or fixed seven-day horizon; see [Forecasts](/consumer-api/forecasts).
+The available forecast period is described in [Forecasts](/consumer-api/forecasts).
 
 ## Fetch adjacent windows
 
-There is no pagination cursor. Split large historical requests into aligned, bounded windows:
+Split large historical requests into aligned windows:
 
 1. Request `[A, B)`.
 2. Request `[B, C)` at the same interval.

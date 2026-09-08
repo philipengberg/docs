@@ -1,40 +1,32 @@
 ---
 title: "Addresses and capabilities"
-description: "Discover supported data before requesting a series."
+description: "Find your addresses and the data available for each."
 icon: "house"
 ---
 
-Start with [List addresses](/consumer-api/reference/list-addresses). Authentication determines the user, so there is no user-ID query parameter. The response lists only that user's addresses. An account with none returns `{"data":[]}`.
+Start with [List addresses](/consumer-api/reference/list-addresses). Use an address's returned `id` when requesting its data. If you have no addresses, the response is `{"data":[]}`.
 
-Use the returned address `id` in series URLs. It is not a metering-point ID or an external address-registry ID.
+## Check what's available
 
-## Read capability flags
+Each address includes `capabilities`. Check that the relevant flag is `true` before requesting a series.
 
-Each address has these booleans:
-
-| Flag | Configured support |
+| Flag | Data |
 | --- | --- |
-| `consumption` | A supported meter authorization, or a supported linked live-usage device where the existing source-selection rules allow it. |
-| `solarExport` | Supported import-meter authorization and a configured export meter. |
-| `consumptionCosts` | A Danish address with supported import-meter access, price region, and resolvable grid configuration. |
-| `solarExportRevenue` | A Danish address with solar-export prerequisites, price region, and required coordinates. |
-| `prices` | A configured price region. |
-| `forecastPrices` | A configured region of DK1, DK2, SE3, or SE4. |
+| `consumption` | Electricity consumption |
+| `solarExport` | Electricity exported from solar |
+| `consumptionCosts` | Calculated consumption costs |
+| `solarExportRevenue` | Calculated solar-export revenue |
+| `prices` | Historical electricity prices |
+| `forecastPrices` | Hourly price forecasts |
 
-Plus is available across regions, but it does not make every resource available for every address. Consumption costs and solar revenue are currently Danish-market features.
+Availability varies by address. A capability can be available even when some readings are missing. If you update your address or meter connection in the app, list your addresses again.
 
-Flags describe configured support, not a live provider health check or guaranteed historical coverage. A configured but unsupported meter does not become usable merely because a live device is linked. Missing metadata may be repaired during a read.
+## Address details
 
-Check the relevant flag before requesting a series. A disabled capability returns `422 feature_unavailable`. Re-list addresses after changing their configuration in the app.
+`label` and `formattedAddress` are display names. `gridOperatorName` identifies your grid operator, and `supplierName` identifies your current electricity supplier. Names and `region` may be `null` when unavailable.
 
-## Names and nulls
+`timeZone` describes the calendar used for [time intervals](/consumer-api/time-and-ranges). Timestamps are returned in UTC.
 
-`label` and `formattedAddress` identify the address for display. `gridOperatorName` and `supplierName` are explicitly nullable: they come from saved grid information and the currently active agreement, not a live lookup. Null means the name is unavailable; do not guess it from another address. Names are display values, not stable identifiers.
+## Historical data
 
-`region` is also nullable. `timeZone` describes the calendar used for the API's intervals; timestamps themselves are UTC.
-
-## Historical access and privacy
-
-A past meter-access end does not by itself disable a capability. Reads still respect actual access bounds and may return fewer rows than the requested period.
-
-Unknown, deleted, and other users' address IDs all return the same `404 resource_not_found`. Do not interpret that response as evidence that another user's address exists.
+Historical readings may remain available after a meter connection ends. The returned data can cover less than the period requested.

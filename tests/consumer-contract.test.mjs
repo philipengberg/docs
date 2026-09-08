@@ -40,6 +40,7 @@ test('only the seven Consumer GET operations are documented', () => {
     assert.deepEqual(names, expected);
   }
 });
+
 test('response fields match the reviewed backend DTOs', () => {
   keys('Address', ['id', 'label', 'formattedAddress', 'region', 'timeZone',
     'gridOperatorName', 'supplierName', 'capabilities']);
@@ -62,6 +63,31 @@ test('response fields match the reviewed backend DTOs', () => {
     ['Address', 'supplierName'], ['CostInterval', 'totalPricePerKWh'],
     ['RevenueInterval', 'totalPricePerKWh'], ['PriceInterval', 'variableChargesPerKWh']]) {
     assert.ok(schemas[name].properties[field].type.includes('null'));
+  }
+});
+
+test('Consumer documentation stays external-facing and links quick start to the reference', () => {
+  const publicFiles = [...pages('consumer-api'), 'introduction.mdx', 'api-reference/openapi.json'];
+  const internalDetails = /user[-\s]?id|msp_(?:live|test)_|Redis|RevenueCat|persisted|metadata repair|best-effort loading|native app aggregates|source selection|server's Copenhagen|seven-day horizon|rejects all query parameters/i;
+
+  for (const path of publicFiles) {
+    assert.doesNotMatch(readFileSync(path, 'utf8'), internalDetails, path);
+  }
+
+  const quickstart = readFileSync('consumer-api/quickstart.mdx', 'utf8');
+  assert.ok(quickstart.includes('](/consumer-api/reference/list-addresses)'));
+  assert.ok(quickstart.includes('](/consumer-api/reference/consumption)'));
+  assert.doesNotMatch(quickstart, /purchase flow/i);
+
+  const authentication = readFileSync('consumer-api/authentication.mdx', 'utf8');
+  assert.match(authentication, /<Note>[\s\S]*active Min Strøm Plus subscription[\s\S]*valid API key[\s\S]*<\/Note>/);
+
+  for (const [path, item] of Object.entries(spec.paths)) {
+    const slug = path === root ? 'list-addresses' : path.split('/').at(-1);
+    const page = readFileSync('consumer-api/reference/' + slug + '.mdx', 'utf8');
+    assert.ok(page.includes('```http\nGET /consumer/v1' + path));
+    assert.ok(page.includes('openapi: "GET ' + path + '"'));
+    assert.ok(item.get.responses['200'].content['application/json'].examples.synthetic);
   }
 });
 
@@ -133,6 +159,8 @@ test('Consumer-first navigation keeps Enterprise URLs and disables the playgroun
   assert.deepEqual(config.api.examples.languages, ['curl']);
   assert.equal(config.api.examples.autogenerate, false);
   assert.equal(config.api.openapi, 'api-reference/openapi.json');
+  assert.deepEqual(config.contextual.options, ['copy', 'download-spec']);
+  assert.match(readFileSync('consumer-api/quickstart.mdx', 'utf8'), /\*\*Download API spec\*\*/);
   const currentConsumerFiles = [...pages('consumer-api'), 'introduction.mdx', 'api-reference/openapi.json'];
 
   for (const path of currentConsumerFiles) {

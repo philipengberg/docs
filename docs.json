@@ -19,8 +19,11 @@
   },
   "favicon": "/images/favicon.png",
   "appearance": {
-    "default": "light",
+    "default": "system",
     "strict": false
+  },
+  "contextual": {
+    "options": ["copy", "download-spec"]
   },
   "navbar": {
     "links": [

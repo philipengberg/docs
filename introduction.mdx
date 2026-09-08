@@ -11,11 +11,11 @@ icon: "house"
 
 The Min Strøm Consumer API gives **Min Strøm Plus** subscribers read-only access to their own addresses, electricity consumption, solar export, calculated costs, and prices.
 
-Create an API key in the iOS app, then use it in your own integration. You do not need to supply your user ID: your key identifies your account, and each request is restricted to your addresses.
+Create an API key in the iOS app, then use it in your own integration. Your key identifies your account.
 
 <CardGroup cols={2}>
   <Card title="Make your first request" icon="terminal" href="/consumer-api/quickstart">
-    Create a key, find your address, and fetch consumption using curl.
+    Create a key, find your address(es), and fetch consumption using curl.
   </Card>
   <Card title="Building a business integration?" icon="building" href="/enterprise-api/overview">
     The Enterprise API (B2B) has a separate access process and authentication.
@@ -29,6 +29,4 @@ Create an API key in the iOS app, then use it in your own integration. You do no
 - Calculated consumption costs and solar-export revenue.
 - Confirmed historical prices and available hourly forecast prices.
 
-Availability depends on the region and the meters or devices configured for each address. A successful response may contain fewer readings than the requested period: missing data is not zero.
-
-The Consumer API does not modify your account, control charging, or expose other users' data.
+Available data varies by address. A successful response may contain fewer readings than the requested period: missing data is not zero.
