@@ -1,32 +1,20 @@
-# Mintlify Starter Kit
+# Min Strøm API documentation
 
-Click on `Use this template` to copy the Mintlify starter kit. The starter kit contains examples including
+Consumer API documentation is the default experience. Enterprise API (B2B) documentation retains the existing third-party page URLs and authentication.
 
-- Guide pages
-- Navigation
-- Customizations
-- API Reference pages
-- Use of popular components
+## Local development
 
-### Development
+Use Node.js 22.12 or newer.
 
-Install the [Mintlify CLI](https://www.npmjs.com/package/mintlify) to preview the documentation changes locally. To install, use the following command
-
-```
-npm i -g mintlify
+```bash
+npm ci
+npm run dev
 ```
 
-Run the following command at the root of your documentation (where mint.json is)
+The preview URL is printed by Mintlify. Tool versions are pinned in package.json and package-lock.json.
 
-```
-mintlify dev
-```
+## Review and publication
 
-### Publishing Changes
+Validate locally before pushing. Review both navigation tabs, existing Enterprise links, endpoint pages, light/dark themes, and mobile layout.
 
-Install our Github App to autopropagate changes from youre repo to your deployment. Changes will be deployed to production automatically after pushing to the default branch. Find the link to install on your dashboard. 
-
-#### Troubleshooting
-
-- Mintlify dev isn't running - Run `mintlify install` it'll re-install dependencies.
-- Page loads as a 404 - Make sure you are running in a folder with `mint.json`
+The main branch publishes automatically to Mintlify. Work on a branch and do not merge until the production Consumer API routes and documented iOS access flow are available. Do not commit real credentials or personal data.

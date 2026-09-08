@@ -1,0 +1,101 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Min Strøm API",
+  "colors": {
+    "primary": "#0A84FF",
+    "light": "#007AFF",
+    "dark": "#0A84FF"
+  },
+  "background": {
+    "color": {
+      "light": "#FFFFFF",
+      "dark": "#05070F"
+    }
+  },
+  "logo": {
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg"
+  },
+  "favicon": "/images/favicon.png",
+  "appearance": {
+    "default": "light",
+    "strict": false
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Home",
+        "href": "https://minstroem.app"
+      },
+      {
+        "label": "Status",
+        "href": "https://status.minstroem.app"
+      },
+      {
+        "label": "Support",
+        "href": "mailto:engberg@minstroem.app"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Get started",
+      "href": "/consumer-api/quickstart"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Consumer API",
+        "groups": [
+          {
+            "group": "Get started",
+            "pages": [
+              "introduction",
+              "consumer-api/quickstart"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Enterprise API (B2B)",
+        "groups": [
+          {
+            "group": "Enterprise integrations",
+            "pages": [
+              "enterprise-api/overview",
+              "api-reference/authentication",
+              "api-reference/endpoints",
+              "api-reference/shared"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "api": {
+    "playground": {
+      "display": "none"
+    },
+    "examples": {
+      "languages": [
+        "curl"
+      ],
+      "autogenerate": false
+    },
+    "mdx": {
+      "server": "https://api.minstroem.app",
+      "auth": {
+        "method": "bearer"
+      }
+    }
+  },
+  "footer": {
+    "socials": {
+      "linkedin": "https://www.linkedin.com/company/86938713"
+    }
+  },
+  "feedback": {
+    "thumbsRating": true
+  }
+}

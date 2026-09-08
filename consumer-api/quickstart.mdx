@@ -1,0 +1,65 @@
+---
+title: "Quick start"
+description: "Create a key and fetch your first consumption series."
+icon: "terminal"
+---
+
+## 1. Create your API key
+
+In the Min Strøm iOS app, open **Profile**, then **API-adgang** (API access). Choose **Opret API-nøgle** (Create API key). An active Min Strøm Plus subscription is required; the app offers the Plus purchase flow if needed.
+
+Copy the complete key and store it securely. It is shown only once. If you lose it, use **Erstat API-nøgle** (Replace API key) to issue a replacement; the old key stops working.
+
+## 2. Configure your terminal
+
+The examples use Bash and curl. This prompt keeps the key itself out of the command you type into shell history:
+
+```bash
+read -r -s -p "Min Strøm API key: " MINSTROEM_API_TOKEN
+printf '\n'
+export MINSTROEM_API_TOKEN
+export MINSTROEM_API_URL='https://api.minstroem.app/consumer/v1'
+```
+
+Keep your key out of source code, URLs, screenshots, and support messages. Use your application's secret configuration for a persistent integration. Environment variables are not a substitute for protecting the machine running your integration.
+
+## 3. Find your address
+
+```bash
+curl --fail-with-body --silent --show-error \
+  --header "Authorization: Bearer ${MINSTROEM_API_TOKEN}" \
+  "${MINSTROEM_API_URL}/me/addresses"
+```
+
+The `data` array contains your addresses. Choose an entry whose `capabilities.consumption` is `true` and copy its `id`. This is the Consumer API address ID, not a metering-point or DAWA address ID.
+
+Set it for subsequent requests:
+
+```bash
+export MINSTROEM_ADDRESS_ID='2b4bf7a8-b5d0-45ab-8d42-3a5688bba167'
+```
+
+The ID above is synthetic. Replace it with an ID returned for your account.
+
+## 4. Read consumption
+
+Choose a period for which your address has data. This example requests a single UTC hour:
+
+```bash
+curl --fail-with-body --silent --show-error --get \
+  --header "Authorization: Bearer ${MINSTROEM_API_TOKEN}" \
+  --data-urlencode 'from=2026-09-05T10:00:00Z' \
+  --data-urlencode 'to=2026-09-05T11:00:00Z' \
+  --data-urlencode 'aggregation=hour' \
+  "${MINSTROEM_API_URL}/me/addresses/${MINSTROEM_ADDRESS_ID}/consumption"
+```
+
+Values are returned as `energyKWh`. The response may be empty if no readings are available. Do not assume that a successful request covers the entire requested period.
+
+Use `--include` with curl when you need to inspect HTTP status, rate-limit headers, and `X-Request-ID`. Curl 7.76 or newer supports `--fail-with-body`.
+
+When finished with this terminal session:
+
+```bash
+unset MINSTROEM_API_TOKEN
+```
